@@ -1,0 +1,36 @@
+
+<!doctype html>
+<html lang="zh_cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>星厨餐帮</title>
+    <meta name="keywords" content="星厨餐帮">
+    <meta name="description" content="星厨餐帮">
+    <link rel="stylesheet" href="../../../static/h5static/static/css/swiper-4.1.6.min.css">
+    <link rel="stylesheet" href="../../../static/h5static/static/css/reset.css">
+    <link rel="stylesheet" href="../../../static/h5static/static/css/common.css">
+</head>
+<body>
+    <div class="downloadBox">
+        <div class="imgBox">
+            <img src="../../../static/h5static/static/img/download.png" class="downloadPic" alt="">
+            <a onclick='goto();' class="btn"></a>
+        </div>
+    </div>
+</body>
+</html>
+<script src="../../../static/h5static/static/js/jquery1.9.1.js"></script>
+<script>
+    var h = $(window).height()
+    $('.downloadBox').css('height',h)
+    function goto() {
+        var u = navigator.userAgent;
+        if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {//安卓手机
+            window.location.href="http://18120650554.fx.sj.360.cn/qcms/view/t/detail?id=4021649";
+        } else if (u.indexOf('iPhone') > -1) {//苹果手机
+            window.location.href="https://itunes.apple.com/cn/app/id1443466594?mt=8";
+        }
+    }
+</script>

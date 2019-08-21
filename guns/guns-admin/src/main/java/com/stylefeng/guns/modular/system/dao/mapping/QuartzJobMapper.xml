@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.QuartzJobMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.QuartzJob">
+        <id column="id" property="id" />
+        <result column="job_name" property="jobName" />
+        <result column="fireDate" property="fireDate" />
+        <result column="corn" property="corn" />
+        <result column="type" property="type" />
+        <result column="is_fire" property="isFire" />
+        <result column="params" property="params" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, job_name, fireDate, corn, type, is_fire, params, create_time
+    </sql>
+
+</mapper>

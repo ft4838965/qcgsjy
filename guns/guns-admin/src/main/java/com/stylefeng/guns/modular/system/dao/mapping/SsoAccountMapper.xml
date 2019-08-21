@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.SsoAccountMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.SsoAccount">
+        <id column="id" property="id" />
+        <result column="sso_id" property="ssoId" />
+        <result column="useable_balance" property="useableBalance" />
+        <result column="frozen_balance" property="frozenBalance" />
+        <result column="pay_password" property="payPassword" />
+        <result column="status" property="status" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, sso_id, useable_balance, frozen_balance, pay_password, status, create_time, update_time
+    </sql>
+
+</mapper>

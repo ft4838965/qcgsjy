@@ -1,0 +1,76 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="编号" value="${item.id}" underline="true"/>
+                            <#input id="servicePhone" name="官方服务电话号码" value="${item.servicePhone}" underline="true"/>
+                            <#input id="aliOssAccessKey" name="阿里云云存储access_key" value="${item.aliOssAccessKey}" underline="true"/>
+                            <#input id="aliOssAccessId" name="阿里云云存储access_id" value="${item.aliOssAccessId}" underline="true"/>
+                            <#input id="aliSmAppcode" name="阿里云实名认证接口appcode" value="${item.aliSmAppcode}" underline="true"/>
+                            <#input id="ypAppkey" name="云片网(短信)appkey" value="${item.ypAppkey}" underline="true"/>
+                            <#input id="gdKey" name="高德地图key" value="${item.gdKey}" underline="true"/>
+                            <#input id="aliPayAppId" name="阿里支付宝appid" value="${item.aliPayAppId}" underline="true"/>
+                            <#input id="aliPayAppPrivateKey" name="阿里支付宝私匙" value="${item.aliPayAppPrivateKey}" underline="true"/>
+                            <#input id="aliPayAppPublicKey" name="阿里支付宝公匙" value="${item.aliPayAppPublicKey}" underline="true"/>
+                            <#input id="aliPayAppAliNotifyUrl" name="阿里支付宝回调地址" value="${item.aliPayAppAliNotifyUrl}" underline="true"/>
+                            <#input id="remind" name="提前多少天提醒" value="${item.remind}" underline="true"/>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">
+                                    安卓APK上传
+                                    <input type="button" value="+" onclick="$(this).next().click();" />
+                                    <input type="file" style="display: none;" onchange="addImg($(this));" />
+                                </label>
+                                <div id="androidApkUrl" class="col-sm-9">
+                                    @if(isNotEmpty(item.androidApkUrl)){
+                                    <a href="${item.androidApkUrl}">${item.androidApkUrl}</a>
+                                    @}
+                                </div>
+                            </div>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="wechatPayAppId" name="微信支付appid" value="${item.wechatPayAppId}" underline="true"/>
+                            <#input id="wechatPayMchId" name="微信支付商户号" value="${item.wechatPayMchId}" underline="true"/>
+                            <#input id="wechatPayNotifyUrl" name="微信支付回调地址" value="${item.wechatPayNotifyUrl}" underline="true"/>
+                            <#input id="wechatPayKey" name="微信支付商户key" value="${item.wechatPayKey}" underline="true"/>
+                            <#input id="wechatAppId" name="微信服务号appid" value="${item.wechatAppId}" underline="true"/>
+                            <#input id="wechatAppSecret" name="微信服务号appsecret" value="${item.wechatAppSecret}" underline="true"/>
+                            <#input id="wechatAccessToken" name="微信服务号令牌" value="${item.wechatAccessToken}" underline="true"/>
+                            <#input id="wechatTicket" name="微信服务号票据" value="${item.wechatTicket}" underline="true"/>
+                            <#input id="androidVersion" name="安卓版本号" value="${item.androidVersion}" underline="true"/>
+                            <#input id="moneyGiveMan" name="奖赏男用户砖石数量" value="${item.moneyGiveMan}" underline="true"/>
+                            <#input id="moneyGiveWomen" name="奖赏女用户返现金额" value="${item.moneyGiveWomen}" underline="true"/>
+                            <#input id="startGetTel" name="获取联系方式所需砖石" value="${item.startGetTel}" underline="true"/>
+                            <#input id="tel" name="管理员手机号" value="${item.tel}" underline="true"/>
+                            <#select name="发布开关" id="publishSwitch" underline="true">
+                            <option value="1">开启</option>
+                            <option value="0">关闭</option>
+                        </#select>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="SettingInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="SettingInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/setting/setting/setting_info.js"></script>
+<script>
+    var obj = $("#publishSwitch").get(0);
+    for(var i = 0; i < obj.options.length; i++){
+        var tmp = obj.options[i].value;
+        if(tmp == ${item.publishSwitch}){
+            obj.options[i].selected = 'selected';
+            break;
+        }
+    }
+</script>
+@}

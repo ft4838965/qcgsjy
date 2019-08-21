@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="aliyun-java-vod-upload-1.4.0">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/guns/guns-admin/src/main/webapp/WEB-INF/lib/aliyun-java-vod-upload-1.4.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/guns/guns-admin/src/main/webapp/WEB-INF/lib/alipay-sdk-java-3.3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/guns/guns-admin/src/main/webapp/WEB-INF/lib/commons-logging-1.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

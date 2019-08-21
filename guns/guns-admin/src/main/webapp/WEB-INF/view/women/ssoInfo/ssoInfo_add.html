@@ -1,0 +1,114 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <input id="id" type="hidden">
+            <input id="ssoId" type="hidden">
+            <div class="row">
+                <#avatar id="avatar" bili="宽300像素:高300像素" name="头像" avatarImg="" underline="true"/>
+                <#avatar id="bigAvatar" bili="宽510像素:高812像素" name="封面图" avatarImg="" underline="true"/>
+                <div class="col-sm-6 b-r">
+                            <#input id="phone" name="手机号" underline="true"/>
+                            <#input id="nickName" name="昵称" underline="true"/>
+                            <#input id="signature" name="个性签名" underline="true"/>
+                            <!--<#input id="birthday" name="生日" underline="true" readonly="readonly"/>-->
+                            <#input id="age" name="年龄" />
+                            <#input id="tall" name="身高" />
+                            <#input id="weight" name="体重(kg)" underline="true"/>
+                            <#select name="封面审核" id="checkBigAvatar" underline="true">
+                            <option value="0" selected="selected" underline="true">未审查</option>
+                            <option value="1">通过</option>
+                            <option value="2">未通过</option>
+                            </#select>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="realName" name="真实姓名" underline="true"/>
+                            <#input id="idCard" name="身份证" underline="true"/>
+                            <#input id="advantege" name="个人优势" underline="true"/>
+                            <#input id="sort" name="人气值" underline="true"/>
+                            <#select name="星评分数" id="startRemark" underline="true">
+                            <option value="0" selected="selected">0</option>
+                            <option value="0.5">0.5</option>
+                            <option value="1.0">1</option>
+                            <option value="1.5">1.5</option>
+                            <option value="2.0">2.0</option>
+                            <option value="2.5">2.5</option>
+                            <option value="3.0">3.0</option>
+                            <option value="3.5">3.5</option>
+                            <option value="4.0">4.0</option>
+                            <option value="4.5">4.5</option>
+                            <option value="5.0">5.0</option>
+                            </#select>
+                            <!--<#input id="tagIds" name="标签集合" underline="true"/>-->
+                            <div id="guess" role="application" style="margin-bottom: 3%">
+                                <label>
+                                    标签集合
+                                </label>
+                                <div class="demo-section k-content">
+                                    <!--<h2>请选择标签</h2>-->
+                                    <select id="tagIds" multiple="multiple" data-placeholder="请选择给她的标签">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                            <!--<#input id="areaCode" name="居住地区域" underline="true"/>-->
+                            <!--<#input id="address" name="详细地址" underline="true"/>-->
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">
+                                    现居地
+                                </label>
+                                <div class="col-sm-9">
+                                    &nbsp;&nbsp;省&nbsp;&nbsp;<select id="now_sheng" onchange="putArea($(this).val(),$(this));">
+                                    <option value="0">--请选择--</option>
+                                    @for(sheng in shengs){
+                                    <option value="${sheng.id}">${sheng.name}</option>
+                                    @}
+                                </select>
+                                    &nbsp;&nbsp;市 &nbsp;<select id="now_shi" onchange="putArea($(this).val(),$(this));">
+                                    <option value="0">--请选择--</option>
+                                </select>
+                                    &nbsp;&nbsp;区&nbsp; <select id="now_qu">
+                                    <option value="0">--请选择--</option>
+                                </select>
+                                </div>
+                            </div>
+
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="SsoInfoInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="SsoInfoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    laydate.render({
+        elem: '#birthday',
+        value: new Date()
+    });
+    //渲染当前猜猜视频的值
+    var videoTagData = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: "/tag/list",
+                dataType: "json"
+            }
+        }
+    });
+    $("#tagIds").kendoMultiSelect({
+        placeholder: "请选择猜猜喜欢课程",
+        dataTextField: "name",
+        dataValueField: "id",
+        autoBind: false,
+        dataSource: videoTagData,
+    });
+</script>
+<script src="${ctxPath}/static/modular/women/ssoInfo/ssoInfo_info.js"></script>
+@}

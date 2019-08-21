@@ -1,0 +1,99 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <input id="id" type="hidden">
+            <input id="ssoId" name="用户的ID" type="hidden">
+            <input id="token" type="hidden">
+            <input id="sex" value="0" type="hidden">
+            <input id="state" type="hidden">
+            <input id="bigAvatar" type="hidden">
+            <div class="row">
+                <#avatar bili="宽300像素:高300像素" id="avatar" name="头像" avatarImg="" underline="true"/>
+                <div class="col-sm-6 b-r">
+
+                            <!--<#input id="id" name="" underline="true"/>-->
+                            <!--<#input id="ssoId" name="用户的ID" underline="true"/>-->
+                            <#input id="phone" name="手机号" underline="true"/>
+                            <!--<#input id="token" name="令牌" underline="true"/>-->
+                            <#input id="nickName" name="昵称" underline="true"/>
+                            <#input id="signature" name="个性签名" underline="true"/>
+                            <!--<#input id="sex" name="性别"/>-->
+                </div>
+
+                <div class="col-sm-6">
+
+                            <!--<#input id="avatar" name="头像" underline="true"/>-->
+                            <!--<#input id="bigAvatar" name="封面图" underline="true"/>-->
+                            <!--<#input id="state" name="用户状态" underline="true"/>-->
+                            <!--<#input id="createTime" name="" underline="true"/>-->
+                            <!--<#input id="updateTime" name="" underline="true"/>-->
+                            <#input id="age" name="年龄" underline="true"/>
+                            <#input id="birthday" name="生日" underline="true" readonly="readonly"/>
+                            <div class="form-group">
+                               <label class="col-sm-3 control-label">
+                                  现居地
+                               </label>
+                            <div class="col-sm-9">
+                                &nbsp;&nbsp;省&nbsp;&nbsp;<select id="now_sheng" onchange="putArea($(this).val(),$(this));">
+                            <option value="0">--请选择--</option>
+                            @for(sheng in shengs){
+                            <option value="${sheng.id}">${sheng.name}</option>
+                            @}
+                        </select>
+                                &nbsp;&nbsp;市 &nbsp;<select id="now_shi" onchange="putArea($(this).val(),$(this));">
+                            <option value="0">--请选择--</option>
+                        </select>
+                                &nbsp;&nbsp;区&nbsp; <select id="now_qu">
+                            <option value="0">--请选择--</option>
+                        </select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <#button btnCss="info" name="是会员" id="ensure" icon="fa-check" clickFun="openVip()"/>
+            <input id="vip" type="hidden" value="0">
+            <div class="row" id="isVip">
+                <div class="col-sm-6 b-r">
+                    <#input id="start" name="砖石数量" underline="true"/>
+                </div>
+                <div class="col-sm-6">
+
+                    <!--<#input id="avatar" name="头像" underline="true"/>-->
+                    <!--<#input id="bigAvatar" name="封面图" underline="true"/>-->
+                    <!--<#input id="state" name="用户状态" underline="true"/>-->
+                    <!--<#input id="createTime" name="" underline="true"/>-->
+                    <!--<#input id="updateTime" name="" underline="true"/>-->
+                    <#select name="会员类型" id="typeId" underline="true" >
+                    <option value="1">1个月</option>
+                    <option value="2">3个月</option>
+                    <option value="3">12个月</option>
+                </#select>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="SsoInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="SsoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    laydate.render({
+        elem: '#birthday',
+        value: new Date()
+    });
+   $(function () {
+       $("#isVip").hide();
+   })
+    openVip = function() {
+        $("#isVip").show();
+        $("#vip").val("1");
+    }
+</script>
+<script src="${ctxPath}/static/modular/man/sso/sso_info.js"></script>
+@}

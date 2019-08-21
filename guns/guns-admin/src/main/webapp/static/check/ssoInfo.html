@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>更多内容</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="../layui/css/modules/layer/default/layer.css">
+    <link rel="stylesheet" type="text/css" href="../layui/css/layui.css">
+    <style>
+        *{margin:0;padding:0;}
+        .loading{
+            height:100%;width:100%;position:fixed;background:rgba(255,255,255,1);
+
+        }
+        .loading >p{position:absolute;left:0;right:0;top:0;bottom:0;margin:auto;height:160px;width:160px;text-align: center;line-height:160px;font-size: 28px;color:#66C525;}
+        .loading p span{position:absolute;display:block;height:140px;width:140px;margin:10px;border-radius:50%;-webkit-box-shadow:0 2px 3px rgba(102,197,37,0.8); animation:loading ease 1s infinite;left:0;top:0;}
+
+        @keyframes loading{
+            0%{transform:rotate(0deg)}
+            100%{transform:rotate(360deg)}
+
+        }
+    </style>
+</head>
+<body id="body">
+<div class="loading">
+
+    <p>稍等...<span></span></p>
+
+</div>
+</body>
+<script src="../layui/layui.js" charset="utf-8"></script>
+<script src="../js/jquery.min.js?v=2.1.4"></script>
+<script src="../layui/lay/modules/layer.js"></script>
+<script>
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+
+    $(function () {
+        $.ajax({
+            url:"/ssoApi/getAllMedia?param="+getQueryString('param')+"&token="+getQueryString('token'),
+            type:"post",
+            dataType:"json",
+            success:function(data){
+                var j=0;
+                var str ="";
+                $('.loading').fadeOut();
+              for (var i=0;i<data.length;i++) {
+                  if (data[i].type==="0"){
+                      str = str + "<div  style=\"width: 25%; height: 120px;float: left;\">\n" +
+                          "    <img src=\""+data[i].imgUrl+"\" style=\"height: 120px;width: 100%;\">\n" +
+                          "</div>";
+
+                     j++;
+                  }else {
+                      str = str + "<div  style=\"width: 25%; height: 120px;float: left;\">\n" +
+                          "    <video src=\""+data[i].imgUrl+"\" controls='controls'  poster='"+data[i].thumb+"' style=\"height: 120px;width: 100%;\">\n" +
+                          "</div>"
+                      j++;
+                  }
+
+                  if (j == 4){
+                      str = str + "<div style=\"clear: both;\"></div>";
+                      j=0;
+                  }
+                  if (i == data.length-1){
+                      str = str + "<div style=\"clear: both;\"></div>"+"<div style=\"margin-top:20px;float: right;margin-right: 10px;\">\n" +
+                          "    <button class=\"layui-btn \" onclick='back(this)'>返回</button>\n" +
+                          "    <button name='"+getQueryString('param')+"'  class=\"layui-btn\" onclick='check(this)' >封号</button>\n" +
+                          "</div>";
+                  }
+              }
+                $("#body").append(str);
+            }
+        });
+    });
+ function back() {
+     window.history.back(-1);
+ }
+ function check(obj) {
+     layer.confirm("您确定'封号'吗？", {
+         btn: ['确定','取消'] //按钮
+     }, function()
+     {
+         layer.closeAll('dialog');
+         $.ajax({
+             url:"/ssoApi/checkPassOrNo",
+             type:"post",
+             dataType:"json",
+             data:{key:obj.name,token:getQueryString('token')},
+             success:function(data){
+                 if(data === '200'){
+                     layer.msg("OK");
+                 }else {
+                     layer.msg("error");
+                 }
+             }
+         });
+     });
+ }
+</script>
+</html>

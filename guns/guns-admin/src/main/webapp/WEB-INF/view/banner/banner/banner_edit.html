@@ -1,0 +1,29 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <#avatar_lijun id="path" bili="宽300像素:高300像素" name="${item.name}" avatarImg="${item.path}" underline="true"/>
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="编号" value="${item.id}" underline="true"/>
+                            <#input id="name" name="名称" value="${item.name}" underline="true"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="type" name="类型" value="${item.type}" underline="true"/>
+                            <#input id="createTime" name="创建时间" value="${item.createTime}" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="BannerInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="BannerInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/banner/banner/banner_info.js"></script>
+@}

@@ -1,0 +1,182 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <div id="imagesContent">
+                <fieldset  style="margin-top: 3%">
+                    <legend>图集上传
+                        <span style="color:red ; vertical-align: middle">宽300像素:高300像素</span></legend>
+                    <div class="putimg"	>
+                        <input id="imageFile" name="imageFile" multiple type="file" data-show-caption="true">
+                    </div>
+                </fieldset>
+            </div>
+            <#avatar bili="宽300像素:高300像素" id="thumb" name="封面图" avatarImg="" underline="true"/>
+            <div id="videoContent">
+                <fieldset  style="margin-top: 3%;"  >
+                    <legend>视频上传</legend>
+                    <div class="putimg"	>
+                        <input id="videoFile" name="videoFile" multiple type="file" data-show-caption="true">
+                    </div>
+                </fieldset>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <!--<#input id="id" name="主键ID" underline="true"/>-->
+                            <!--<#input id="ssoId" name="用户的ID" underline="true"/>-->
+
+                            <!--<#input id="thumb" name="作品封面图" underline="true"/>-->
+                            <!--<#input id="check" name="审核状态"/>-->
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">作品类型<span style="color:red ; font-size: 20px; vertical-align: middle">*</span></label>
+                                <div class="col-sm-9">
+                                    <select onchange="typeChange($(this).val())" class="form-control" id="type"  name="type"  underline="true">
+                                        <option value="1">图文</option>
+                                        <option value="2">视频</option>
+                                    </select >
+                                </div>
+
+                            </div>
+                            <#select name="审核状态" id="check" underline="true">
+                            <option value="0" selected="selected">待审核</option>
+                            <option value="1">已通过</option>
+                            <option value="1">未通过</option>
+                            </#select>
+                </div>
+
+                <div class="col-sm-6">
+                            <!--<#input id="type" name="类型" underline="true"/>-->
+                            <#input id="content" name="内容" underline="true"/>
+                            <#select id ="ssoId" name="用户" underline="true" style="width:100%">
+                            </#select>
+                             <input id="baseId" hidden>
+                            <!--<#input id="baseId" name="图片表关联id" underline="true"/>-->
+                            <!--<#input id="likeCount" name="点赞量" underline="true"/>-->
+                            <!--<#input id="commentCount" name="评论量" underline="true"/>-->
+                            <!--<#input id="createTime" name="创建时间" underline="true"/>-->
+                            <!--<#input id="updateTime" name="更新时间" underline="true"/>-->
+                </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="SsoWorkInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="SsoWorkInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="${ctxPath}/static/js/plugins/wangEditor/wangEditor.js"></script>
+<script src="${ctxPath}/static/modular/works/ssoWork/ssoWork_info.js"></script>
+
+<script>
+    $(function () {
+
+        $('#videoContent').hide();
+        $('#thumb').hide();
+
+        var thumbUp = new $WebUpload("thumb","/tool/uploadFile");
+        thumbUp.setUploadBarId("progressBar");
+        thumbUp.init("/tool/uploadFile");
+
+        /**
+         * 动态获取所有用户
+         */
+        var ajax = new $ax(Feng.ctxPath + "/sso/getAll", function (data) {
+            for (var i = 0; i < data.length; i++) {
+                var jsonObj = data[i];
+                $("#ssoId").append('<option value="' + jsonObj.ssoId + '">' + jsonObj.nickName + '</option>');
+            }
+
+        }, function (data) {
+
+        });
+        ajax.start();
+    });
+
+    function typeChange (id) {
+        if(id==1){
+            $('#imagesContent').show();
+            $('#videoContent').hide();
+            $('#thumb').hide();
+            $('#thumb').val("");
+        }else {
+            $('#imagesContent').hide();
+            $('#thumb').show();
+            $('#videoContent').show();
+        }
+    }
+
+    /* 封装bootstrap fileInput 多文本框文件上传方法 */
+    function randomPassword() {
+        var seed = new Array(
+            '11', '22', '35', '48', '58', '67', '79', '88', '98', '31', '15', '52', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+        );//数组
+        seedlength = seed.length;//数组长度
+        var createPassword = ''
+        for (i = 0; i < 15; i++) {
+            j = Math.floor(Math.random() * seedlength);
+            createPassword += seed[j]
+        }
+        return createPassword;
+    }
+
+    //参数1:控件id、参数2:上传地址
+    var FileInput = function () {
+
+        var oFile = new Object();
+        //初始化fileinput控件（第一次初始化）
+        oFile.Init = function (ctrlName, uploadUrl, uploadId) {
+            var control = $('#' + ctrlName);
+            control.fileinput({
+                language: 'zh',                                         //设置语言
+                uploadUrl: uploadUrl,                                   //上传的地址
+                overwriteInitial: false, 								//让预览图片和新选择的图片在同一页面进行操作
+                minFileCount: 1,										//最小上传数
+                maxFileCount: 10,										//最大上传数
+                allowedFileExtensions: ['jpg', 'gif', 'jpeg', 'png', 'pdf','mp4'],    //接收的文件后缀
+                showUpload: false,                                      //是否显示上传按钮
+                showRemove: false,										//是否显示移除按钮
+                showCaption: true,                                     //是否显示标题
+                browseClass: "btn btn-primary",                         //按钮样式
+                initialPreviewAsData: true,             //
+                enctype: 'multipart/form-data',
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+                uploadExtraData: function (previewId, index) {
+                    return {'goodsTypeId': uploadId};
+                }
+            });
+            //导入文件上传完成之后的事件
+            $("#ctrlName").on("fileuploaded", function (event, data, previewId, index) {
+                toastr.success('上传成功!');
+            });
+            //删除预览图片事件
+            $('#ctrlName').on('filepredelete', function (event, key) {
+                toastr.success('删除成功!');
+            });
+        };
+        return oFile;
+    };
+
+    //初始化fileinput
+    var createFileInput = function () {
+        var oFileInput = new FileInput();
+        //参数1:控件id、参数2:上传地址  3.初始化展示图片数组  4.图片预览参数、删除url配置
+        //var imagesId = randomPassword();
+        //var videoId = randomPassword();
+        var baseId = randomPassword();
+        var signatureDishes = randomPassword();
+
+        $('#baseId').val(baseId);
+        //$('#baseId').val(videoId);
+        $('#signatureDishes').val(signatureDishes);
+
+        oFileInput.Init("imageFile", "/muchPhoto/upload", baseId);
+        oFileInput.Init("videoFile", "/videoUtilOption/uploadVideo", baseId);
+        // oFileInput.Init("signatureFile","/muchPhoto/upload",signatureDishes);
+    };
+    createFileInput();
+</script>
+@}

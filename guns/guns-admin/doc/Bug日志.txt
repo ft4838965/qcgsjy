@@ -1,0 +1,622 @@
+
+   下载内容的地址 ： C:\Users\Administrator\Desktop\springcloudteacher
+    
+   不管是什么接口：
+                   开始都必须要有字段的非空判断，
+                   封装数据时都要判断从数据库中拿取出来的数据是否有，
+                   返回的Map设置默认值
+
+IDEA快捷键 ：
+              全局字符串搜索 ： C + H （or ：  S + S）
+
+              文件中字符串搜索 ： C + F
+          
+              项目跳转 ：  C + A + ]   /   C + A + [
+
+              搜索某个快捷键 :  C + S + A
+
+              最近浏览文件 ：  C + E
+
+              回到上一次编辑的地方 ：  C + Q
+
+              回到之前浏览过的地方 ：  A + 左右键
+
+              热部署 ： C + F9
+
+              html断点方式   ： 在需要打断点的代码的上面写上  debugger
+              
+
+     
+使用Guns框架开发项目的准备  ： 在GunsGeneratorConfig类中，设置代码生成的默认数据库连接
+            dataSourceConfig.setUrl("jdbc:mysql://127.0.0.1:3306/xccb?characterEncoding=utf8");          
+
+
+1.Cause: java.sql.SQLIntegrityConstraintViolationException: Column 'id' in field list is ambiguous
+        多表连接查询时，表之间有相同的字段，需要指明是哪一张表的，不然会出现ambiguous“模糊不清”的错误
+
+2.权限认证
+   List<Map<String, Object>> user = getUser(phone, token);
+        if(user.size()==0){
+            return ResultMsg.fail("接口调用失败!", HttpStatus.BAD_REQUEST.toString(), "");
+        }
+        int id = -1;
+        for (Map<String, Object> u : user){
+            id = (int) u.get("id");
+        }
+
+
+3.拆串
+           String targets = ;
+            String[] split = targets.split(",");
+            for(int i=0;i<split.length;i++){
+                HashMap<String, Object> hashMap = new HashMap<>();
+                String[] id_value = split[i].split(":");
+                hashMap.put("id",id_value[0]);
+                hashMap.put("name",id_value[1]);
+            }
+
+
+4. 打包 ： clean package -Dmaven.test.skip=true
+
+
+
+5. 在shiroConfig文件中配置安全拦截，注意在/**之前
+
+
+   
+6. substring 是 [0,2) 左闭右开
+
+
+
+7. 文件上传阿里云 ：
+    
+    1）添加组件       
+     <#avatar bili="宽750像素:高560像素" id="thumb" name="缩略图" avatarImg="" underline="true"/>
+    
+    2）初始化
+         var thumbUp = new $WebUpload("thumb","/tool/uploadFile");
+         thumbUp.setUploadBarId("progressBar");
+         thumbUp.init("/tool/uploadFile");
+
+    3）在info.js文件中的搜集数据代码块中增加该项
+        .set('thumb')
+     
+    3）修改web-upload-object.js文件
+
+    4）导入ToolController
+
+
+
+
+8.ajax下拉框（单选）
+     
+    1）导入标签（修改id 和 name）
+       <#select id ="cityId" name="城市" underline="true" style="width:100%">
+	</#select>
+
+    2）写js（修改url 和 fullname 以及 cityId）-
+       	$(document).ready(function () {
+		/**
+		 * 动态获取所有XX
+		 */
+		var ajax = new $ax(Feng.ctxPath + "/dept/list", function (data) {
+			for (var i = 0; i < data.length; i++) {
+				var jsonObj = data[i];
+				$("#cityId").append('<option value="' + jsonObj.id + '">' + jsonObj.fullname + '</option>');
+			}
+
+		}, function (data) {
+
+		});
+		ajax.start();
+	});
+ 
+     3）在info.js文件中的搜集数据代码块中增加该项
+          .set('cityId')
+
+
+
+
+9.ajax下拉框（复选）
+
+    1）引入文件
+                <link href="${ctxPath}/static/kendoui/styles/kendo.common.min.css" rel="stylesheet">
+                <link href="${ctxPath}/static/kendoui/styles/kendo.default.min.css" rel="stylesheet">
+                <script src="${ctxPath}/static/kendoui/styles/js/kendo.all.min.js"></script>
+
+    2）导入标签
+				<div id="guess" role="application" style="margin-bottom: 3%">
+                                                                                <label>
+                                                                                标签集合
+                                                                                </label>
+					<div class="demo-section k-content">
+						<!--<h2>请选择标签</h2>-->
+						<select id="guessVideo" multiple="multiple" data-placeholder="请选择猜猜喜欢课程">
+						</select>
+					</div>
+				</div>
+				<div class="hr-line-dashed"></div>
+
+    3）js(直接放在script下面)
+       //渲染当前猜猜视频的值
+       //如果要回显，要用一个数据接收默认的value值  multArrays = ${multArr};
+                 
+	var videoTagData = new kendo.data.DataSource({
+		transport: {
+			read: {
+				url: "/dict/list",
+				dataType: "json"
+			}
+		}
+	});
+	$("#guessVideo").kendoMultiSelect({
+		placeholder: "请选择猜猜喜欢课程",
+		dataTextField: "name",
+		dataValueField: "id",
+		autoBind: false,//回显设置为true
+		dataSource: videoTagData,
+                                 //回显加value: multArrays
+	});
+
+    5）在info.js文件中的“搜集数据”方法中增加数据
+           var arron = $('#guessVideo').val();
+    var newDemo = "";
+    if (arron != null && arron.length > 0) {
+        for (var z = 0; z < arron.length; z++) {
+            newDemo += arron[z] + ",";
+        }
+        this.userInfoData['guessVideo'] = newDemo;
+    } else {
+        this.userInfoData['guessVideo'] = '';
+    }
+
+    6)Cotroller层的参数
+          String guessVideo
+       //如果要回显，Cotroller加入下面的代码
+         //回显标签集合
+        String tags = ssoInfo.getTagIds();
+        String[] split = tags.split(",");
+        List<Integer> tagIds = new ArrayList<>();
+        for (String tag : split ) {
+            String[] split1 = tag.split(":");
+            tagIds.add(Integer.parseInt(split1[0]));
+        }
+        model.addAttribute("multArr",tagIds);
+
+
+
+10.对数据库查出的字符转义
+      Tool.isNull(indent.getPayType())?"支付方式为空":"ali".equals(indent.getPayType())?"支付宝支付":"wechat".equals(indent.getPayType())?"微信支付":"未知支付方式:"+indent.getPayType()
+
+
+
+11.springboot中开启事务
+
+     1）开启
+        @EnableTransactionManagement (guns的数据源配置文件已经开启了事务)
+
+     2）在需要的方法上添加
+        @Transactional(rollbackFor = Exception.class)
+
+     3）手动配置
+        DefaultTransactionDefinition def = new DefaultTransactionDefinition();
+        def.setName("someTxName");
+        def.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRED);
+        TransactionStatus status = transactionManager.getTransaction(def);
+    
+     4）回滚
+        transactionManager.rollback(status);
+
+     5）提交
+        transactionManager.commit(status);
+
+     6）注入
+       @Autowired
+    private DataSourceTransactionManager transactionManager;
+
+12.springboot集成quartz实现定时调度
+
+     
+1）配置
+
+@Configuration
+public class QuartzConfig {
+    @Bean
+    public JobDetail teatQuartzDetail(){
+        return JobBuilder.newJob(Sso_auto_expire_job.class).withIdentity("testQuartz").storeDurably().build();
+    }
+
+    @Bean
+    public Trigger testQuartzTrigger(){
+        SimpleScheduleBuilder scheduleBuilder = SimpleScheduleBuilder.simpleSchedule()
+                .withIntervalInSeconds(1)  //设置时间周期单位秒
+                .repeatForever();
+        return TriggerBuilder.newTrigger().forJob(teatQuartzDetail())
+                .withIdentity("testQuartz")
+                .withSchedule(scheduleBuilder)
+                .build();
+    }
+}
+
+2)创建job
+public class Sso_auto_expire_job extends QuartzJobBean {
+    /**
+     * 执行定时任务
+     * @param jobExecutionContext
+     * @throws JobExecutionException
+     */
+    @Override
+    protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+        /*
+           写业务逻辑
+         */
+        System.out.println("quartz task "+new Date());
+    }
+}
+
+
+13.springboot配置拦截器
+ 
+1）配置
+
+@Configuration
+public class WebAppConfig implements WebMvcConfigurer {
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new identify_Intercepter()).addPathPatterns("/**"); //指定路径
+    }
+}
+
+2)创建拦截器类 implements HandlerInterceptor，重写preHandle方法，返回true表示通过
+
+
+
+14.后台获取阿里云上的图片资源
+    if(!Tool.isNull(users.get(0).get("avatar"))){
+                        //拿阿里云OSS图片
+                        URL url = new URL(users.get(0).get("avatar").toString());
+                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                        conn.setRequestMethod("GET");
+                        //超时响应时间为5秒
+                        conn.setConnectTimeout(5 * 1000);
+                        //通过输入流获取图片数据
+                        InputStream inStream = conn.getInputStream();
+                        Image srcLogo = ImageIO.read(inStream);
+                        inStream.close();
+                        int srcLogoWidth = 600/4;//获取logo的宽
+                        int srcLogoHeight = 600/4;//获logo片的高
+                        Graphics2D graph = QRimg.createGraphics();
+                        int x = (QRimg.getWidth() - srcLogoWidth) / 2;
+                        int y = (QRimg.getHeight() - srcLogoHeight) / 2;
+                        graph.drawImage(srcLogo, x, y, srcLogoWidth, srcLogoHeight, null);
+                        graph.dispose();
+                    }
+                    // 输出图片
+                    response.setHeader("Pragma", "no-cache");
+                    response.setHeader("Cache-Control", "no-cache");
+                    response.setDateHeader("Expires", 0);
+                    response.setContentType("image/jpeg");
+                    // 将图像输出到Servlet输出流中。
+                    ServletOutputStream sos = response.getOutputStream();
+                    ImageIO.write(QRimg, "jpeg", sos);
+                    sos.close();
+                    return ResultMsg.success("成功",null,null);
+
+15.多表连接查询
+                SELECT 
+                b.NAME AS username,
+                c.lv AS lvName, 
+                ( 
+                SELECT 
+                GROUP_CONCAT( avatar )  
+                FROM 
+                sys_user_api 
+                LEFT JOIN sys_user_fabulous ON sys_user_api.id = sys_user_fabulous.user_id  
+                WHERE 
+                sys_user_fabulous.sys_works = a.id  
+                LIMIT 0,
+                5  
+                ) AS SOME, 
+                ( SELECT count( 1 ) FROM sys_user_fabulous WHERE sys_user_fabulous.sys_works = a.id ) AS likeCount  
+                FROM 
+                sys_works a 
+                LEFT JOIN sys_user_api b ON a.user_id = b.id 
+                LEFT JOIN sys_user_target c ON b.id = c.uid 
+                LEFT JOIN sys_area d ON b.now_shi = d.id 
+                where a.id = 946 
+
+
+
+16.多图片，视频上传(注意引入fileup.js文件)
+    
+     1)引入组件
+                        <div id="imagesContent">
+                        <fieldset  style="margin-top: 3%">
+                            <legend>图集上传
+
+                                <span style="color:red ; vertical-align: middle">宽300像素:高300像素</span></legend>
+                            <div class="putimg"	>
+                                <input id="imageFile" name="imageFile" multiple type="file" data-show-caption="true">
+                            </div>
+                        </fieldset>
+                    </div>
+
+     2)js
+
+  /* 封装bootstrap fileInput 多文本框文件上传方法 */
+    function randomPassword() {
+        var seed = new Array(
+            '11', '22', '35', '48', '58', '67', '79', '88', '98', '31', '15', '52', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+        );//数组
+        seedlength = seed.length;//数组长度
+        var createPassword = ''
+        for (i = 0; i < 15; i++) {
+            j = Math.floor(Math.random() * seedlength);
+            createPassword += seed[j]
+        }
+        return createPassword;
+    }
+
+    //参数1:控件id、参数2:上传地址
+    var FileInput = function () {
+
+        var oFile = new Object();
+        //初始化fileinput控件（第一次初始化）
+        oFile.Init = function (ctrlName, uploadUrl, uploadId) {
+            var control = $('#' + ctrlName);
+            control.fileinput({
+                language: 'zh',                                         //设置语言
+                uploadUrl: uploadUrl,                                   //上传的地址
+                overwriteInitial: false, 								//让预览图片和新选择的图片在同一页面进行操作
+                minFileCount: 1,										//最小上传数
+                maxFileCount: 10,										//最大上传数
+                allowedFileExtensions: ['jpg', 'gif', 'jpeg', 'png', 'pdf','mp4'],    //接收的文件后缀
+                showUpload: false,                                      //是否显示上传按钮
+                showRemove: false,										//是否显示移除按钮
+                showCaption: true,                                     //是否显示标题
+                browseClass: "btn btn-primary",                         //按钮样式
+                initialPreviewAsData: true,             //
+                enctype: 'multipart/form-data',
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+                uploadExtraData: function (previewId, index) {
+                    return {'goodsTypeId': uploadId};
+                }
+            });
+            //导入文件上传完成之后的事件
+            $("#ctrlName").on("fileuploaded", function (event, data, previewId, index) {
+                toastr.success('上传成功!');
+            });
+            //删除预览图片事件
+            $('#ctrlName').on('filepredelete', function (event, key) {
+                toastr.success('删除成功!');
+            });
+        };
+        return oFile;
+    };
+
+    //初始化fileinput
+    var createFileInput = function () {
+        var oFileInput = new FileInput();
+        //参数1:控件id、参数2:上传地址  3.初始化展示图片数组  4.图片预览参数、删除url配置
+        var imagesId = randomPassword();
+        var videoId = randomPassword();
+        var signatureDishes = randomPassword();
+
+        $('#images').val(imagesId);  //把自己产生的imageId传给后台保存
+        $('#video').val(videoId); 
+        $('#signatureDishes').val(signatureDishes);
+
+        oFileInput.Init("imageFile", "/muchPhoto/upload", imagesId);
+        //oFileInput.Init("videoFile", "/videoUtilOption/uploadVideo", videoId);
+        // oFileInput.Init("signatureFile","/muchPhoto/upload",signatureDishes);
+    };
+    createFileInput();
+
+17.循环集合
+
+            <div id="foodContents" style="display: none;">
+                @for(content in foodContents){
+                <div class="foodContentId" style="display: none;">${content}</div>
+                @}
+            </div>
+          
+18.sql模板
+SELECT
+  a.id,
+	a.sso_id as ssoId,
+  a.phone,
+  a.nick_name as nickName,
+  a.create_time as createTime,
+  a.token,
+  d.name,
+  c.status
+FROM
+	t_sso a
+LEFT JOIN t_sso_info b ON a.sso_id = b.sso_id
+LEFT JOIN t_vip c ON b.sso_id = c.sso_id
+LEFT JOIN t_vip_type d ON c.type_id = d.id
+
+
+19.日期标签
+
+     1）引入
+<#input id="birthday" name="生日" underline="true" readonly="readonly"/>
+
+     2）js代码
+<script>
+    laydate.render({
+        elem: '#birthday',
+        value: new Date()
+    });
+
+
+20.三级联动
+
+   1）引入
+                    <div class="form-group">
+                               <label class="col-sm-3 control-label">
+                                  现居地
+                               </label>
+                            <div class="col-sm-9">
+                                &nbsp;&nbsp;省&nbsp;&nbsp;<select id="now_sheng" onchange="putArea($(this).val(),$(this));">
+                            <option value="0">--请选择--</option>
+                            @for(sheng in shengs){
+                            <option value="${sheng.id}">${sheng.name}</option>
+                            @}
+                        </select>
+                                &nbsp;&nbsp;市 &nbsp;<select id="now_shi" onchange="putArea($(this).val(),$(this));">
+                            <option value="0">--请选择--</option>
+                        </select>
+                                &nbsp;&nbsp;区&nbsp; <select id="now_qu">
+                            <option value="0">--请选择--</option>
+                        </select>
+                        </div>
+                    </div>
+
+    2）js代码（在info.js文件最后加）
+                  function putArea(pid, pObject, id) {
+    $(pObject).find('option').each(function (i, it) {
+        if ($(it).val() == pid) $(it).attr('selected', 'selected');
+    });
+    $.ajaxSetup({async: false});
+    $(pObject).nextAll('select').each(function (i, it) {
+        $(it).val('0').change();
+        $(it).children(':not(:eq(0))').remove();
+    })
+    if (pid != '0') {
+        $.post('/sso/getAreaByPid', {pid: pid}, function (r) {
+            $(r).each(function (i, it) {
+                $(pObject).next('select:eq(0)').append('<option ' + (it.id == id ? 'selected="selected"' : '') + ' value="' + it.id + '">' + it.name + '</option>')
+            });
+        });
+    }
+}
+
+    3）在跳转过来的controller中加
+            model.addAttribute("shengs",dao.selectBySQL("select * from "+FSS.area+" where pid=0"));
+
+
+
+21.循环list中删除内容
+
+     Iterator<Map<String, Object> > iterator = ssoList.iterator();
+                while(iterator.hasNext()){
+                    Map<String, Object> map = iterator.next();
+                    String status = map.get("status")+"";
+                    if (!Tool.isNull(status)&&status.equals("1")){
+                        map.put("is_vip","是");
+                        map.put("vip_type",map.get("name"));
+                        map.remove("status");
+                    }else iterator.remove();
+                }
+
+
+22.下拉框的改变事件
+                       
+         1）select标签上添加事件    
+             onchange="typeChange($(this).val())"
+                             
+         2）js代码
+         function typeChange (id) {
+        if(id==1){
+             $('#imagesContent').show();
+            $('#videoContent').hide();
+        }else {
+            $('#imagesContent').hide();
+            $('#videoContent').show();
+        }
+    }
+
+
+23.update拼句模板（多表连接修改）
+                             UPDATE t_sso SET avatar = "+"'"+sso.getAvatar()+"'"+",big_avatar+"+"'"+sso.getBigAvatar()+"'"+" WHERE sso_id = "+ssoInfo.getSsoId()
+
+
+24.增加select标签
+<#select name="星评分数" id="startRemark" underline="true">
+                            <option value="0" selected="selected">0</option>
+                            <option value="0.5">0.5</option>
+                            <option value="1.0">1</option>
+                            <option value="1.5">1.5</option>
+                            <option value="2.0">2.0</option>
+                            <option value="2.5">2.5</option>
+                            <option value="3.0">3.0</option>
+                            <option value="3.5">3.5</option>
+                            <option value="4.0">4.0</option>
+                            <option value="4.5">4.5</option>
+                            <option value="5.0">5.0</option>
+                            </#select>
+
+25.回显select标签
+      1）引入标签
+ <#select name="星评分数" id="role" underline="true"></#select>
+      2）js代码（放在初始化执行js代码快中）
+        $('#role').append('<option value="">--请选择--</option>').append('<option value="manager">餐厅</option>').append('<option value="userapi">用户</option>');
+        $("#role").val("${item.role}").change();// ${item.role}服务器过来的数据
+
+26.Excle表导出
+     1）加入工具类
+     2）加入控制器
+     3）前端添加 window.location.href="/export/girls";    
+
+
+27.富文本编辑器
+
+     1）引入组件
+                                <fieldset style="margin-top: 3%" >
+				<h2>做法详情</h2>
+				<div class="form-group">
+				<div class="col-sm-12">
+				<div id="editor" class="editorHeight" >
+				</div>
+				</div>
+				</div>
+				</fieldset>
+
+    2）js
+
+        <script type="text/javascript" src="${ctxPath}/static/js/plugins/wangEditor/wangEditor.js"></script>
+
+        //初始化编辑器
+	var E = window.wangEditor;
+	var editorName = ('#editor');
+	var editor = new E(editorName);
+
+	editor.customConfig.uploadImgServer = '/muchPhoto/wangUpload';  // 上传图片到服务器
+	editor.customConfig.uploadImgTimeout = 300000;
+	editor.customConfig.uploadImgHooks = {
+		before: function (xhr, editor, files) {
+		},
+		success: function (xhr, editor, result) {
+		},
+		fail: function (xhr, editor, result) {
+			alert("上传图片失败!")
+		},
+		error: function (xhr, editor) {
+		},
+		timeout: function (xhr, editor) {
+		},
+		customInsert: function (insertImg, result, editor) {
+			var url = result.url
+			insertImg(url)
+		}
+	};
+	editor.create();
+
+    3)在info.js中去搜集数据
+            
+    var arron = $('#guessVideo').val();
+    var newDemo = "";
+    if (arron != null && arron.length > 0) {
+        for (var z = 0; z < arron.length; z++) {
+            newDemo += arron[z] + ",";
+        }
+        this.userInfoData['guessVideo'] = newDemo;
+    } else {
+        this.userInfoData['guessVideo'] = '';
+    }
+
+
+28.邮箱认证  ：  /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/           
+       

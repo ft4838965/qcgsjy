@@ -1,0 +1,58 @@
+/*评论滚动*/
+.imgPl {
+    width: 100%;
+    height: 6.6rem;
+    overflow: hidden;
+    position: absolute;
+    z-index: 999;
+    top: 5rem;
+}
+.imgPl .plUl {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top: 100%;
+}
+.imgPl .plUl .plLi {
+    width: 100%;
+    height: 1.8rem;
+}
+/*.imgPl #demo1 .plUl .plLi{display: none;}*/
+.imgPl .plUl .plLi .plBox {
+    width: 100%;
+    float: right;
+    margin-right: 1rem;
+    margin-top: 0.22rem;
+}
+.imgPl .plUl .plLi .plBox .plText {
+    width: auto;
+    max-width: 70%;
+    position: relative;
+    padding: 0.2rem 0.2rem;
+    padding-right: 1.8rem;
+    border-radius: 2rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    line-height: 1.5rem;
+    color: #fff;
+    float: right;
+    font-size: 0.8rem;
+    padding-left: 0.5rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.imgPl .plUl .plLi .plBox .plLogo {
+    width: 1.5rem;
+    height: 1.5rem;
+    position: absolute;
+    right: 0.2rem;
+    top: 0.2rem;
+    float: right;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-left: 0.6rem
+}
+.imgPl .plUl .plLi .plBox .plLogo > img {
+    width: 100%;
+    height: 100%;
+}

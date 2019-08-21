@@ -1,0 +1,48 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <input id="id" name="" type="hidden">
+                            <!--<#input id="id" name="" underline="true"/>-->
+                            <#input id="servicePhone" name="投诉电话" underline="true"/>
+                            <#input id="aliOssAccessKey" name="阿里云云存储access_key" underline="true"/>
+                            <#input id="aliOssAccessId" name="阿里云云存储access_id" underline="true"/>
+                            <#input id="aliSmAppcode" name="阿里云实名认证接口appcode" underline="true"/>
+                            <#input id="ypAppkey" name="云片网(短信)appkey" underline="true"/>
+                            <#input id="gdKey" name="高德地图key" underline="true"/>
+                            <#input id="aliPayAppId" name="阿里支付宝appid" underline="true"/>
+                            <#input id="aliPayAppPrivateKey" name="阿里支付宝私匙" underline="true"/>
+                            <#input id="aliPayAppPublicKey" name="阿里支付宝公匙" underline="true"/>
+                            <#input id="aliPayAppAliNotifyUrl" name="阿里支付宝回调地址"/>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="wechatPayAppId" name="微信支付appid" underline="true"/>
+                            <#input id="wechatPayMchId" name="微信支付商户号" underline="true"/>
+                            <#input id="wechatPayNotifyUrl" name="微信支付回调地址" underline="true"/>
+                            <#input id="wechatPayKey" name="微信支付商户key" underline="true"/>
+                            <#input id="wechatAppId" name="微信订阅号appid" underline="true"/>
+                            <#input id="wechatAppSecret" name="微信订阅号appsecret" underline="true"/>
+                            <#input id="wechatAccessToken" name="微信订阅号access_token(不用展示)" underline="true"/>
+                            <#input id="wechatTicket" name="微信订阅号ticket(不用展示)" underline="true"/>
+                            <#input id="androidVersion" name="安卓版本号" underline="true"/>
+                            <!--<#input id="androidApkUrl" name="安卓APK下载地址" underline="true"/>-->
+                            <input id="androidApkUrl" name="" type="hidden">
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="SettingInfoDlg.addSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="SettingInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/setting/setting/setting_info.js"></script>
+@}

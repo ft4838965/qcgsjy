@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.SsoInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.SsoInfo">
+        <id column="id" property="id" />
+        <result column="sso_id" property="ssoId" />
+        <result column="real_name" property="realName" />
+        <result column="id_card" property="idCard" />
+        <result column="birthday" property="birthday" />
+        <result column="age" property="age" />
+        <result column="tall" property="tall" />
+        <result column="weight" property="weight" />
+        <result column="advantege" property="advantege" />
+        <result column="tag_ids" property="tagIds" />
+        <result column="area_code" property="areaCode" />
+        <result column="address" property="address" />
+        <result column="sort" property="sort" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="start_remark" property="startRemark" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, sso_id, real_name, id_card, birthday, age, tall, weight, advantege, tag_ids, area_code, address, sort,start_remark, create_time, update_time
+    </sql>
+
+</mapper>

@@ -1,0 +1,29 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="主键" value="${item.id}" underline="true"/>
+                            <#input id="ssoId" name="用户id" value="${item.ssoId}" />
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="beSsoId" name="被邀请用户id" value="${item.beSsoId}" underline="true"/>
+                            <#input id="createTime" name="创建时间" value="${item.createTime}" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="InvitedInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="InvitedInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/invited/invited/invited_info.js"></script>
+@}

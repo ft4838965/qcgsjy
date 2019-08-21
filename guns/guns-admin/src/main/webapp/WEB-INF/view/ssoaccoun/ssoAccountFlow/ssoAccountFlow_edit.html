@@ -1,0 +1,35 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="编号" value="${item.id}" underline="true"/>
+                            <#input id="ssoId" name="用户ID" value="${item.ssoId}" underline="true"/>
+                            <#input id="comeFrom" name="消费来源--0/官方--1/用户" value="${item.comeFrom}" underline="true"/>
+                            <#input id="money" name="金额" value="${item.money}" underline="true"/>
+                            <!--<#input id="avilableBalance" name="剩余可用金额" value="${item.avilableBalance}" />-->
+                </div>
+
+                <div class="col-sm-6">
+                            <!--<#input id="frozenBalance" name="剩余冻结金额" value="${item.frozenBalance}" underline="true"/>-->
+                            <#input id="businessType" name="业务类型--0/打赏--1/提现" value="${item.businessType}" underline="true"/>
+                            <#input id="businessName" name="业务名" value="${item.businessName}" underline="true"/>
+                            <!--<#input id="note" name="备注" value="${item.note}" underline="true"/>-->
+                            <#input id="createTime" name="创建时间" value="${item.createTime}" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="SsoAccountFlowInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="SsoAccountFlowInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/ssoaccoun/ssoAccountFlow/ssoAccountFlow_info.js"></script>
+@}

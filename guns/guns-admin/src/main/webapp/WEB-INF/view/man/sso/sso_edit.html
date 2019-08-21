@@ -1,0 +1,81 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <input id="bigAvatar" value="${item.bigAvatar}" type="hidden">
+            <input id="id" value="${item.id}" type="hidden">
+            <!--<input id="age" type="hidden">-->
+            <!--<input id="birthday" type="hidden">-->
+            <!--<input id="now_sheng" type="hidden">-->
+            <!--<input id="now_shi" type="hidden">-->
+            <!--<input id="now_qu" type="hidden">-->
+            <div class="row">
+                <#avatar_lijun id="avatar" bili="宽300像素:高300像素" name="头像" avatarImg="${item.avatar}" underline="true"/>
+                <div class="col-sm-6 b-r">
+                            <!--<#input id="id" name="" value="${item.id}" underline="true"/>-->
+                            <#input id="ssoId" name="用户的ID" value="${item.ssoId}" underline="true"/>
+                            <#input id="phone" name="手机号" value="${item.phone}" underline="true"/>
+                            <#input id="token" name="令牌" value="${item.token}" underline="true"/>
+                            <#input id="nickName" name="昵称" value="${item.nickName}" underline="true"/>
+
+                </div>
+
+                <div class="col-sm-6">
+                            <!--<#input id="avatar" name="头像" value="${item.avatar}" underline="true"/>-->
+                            <!--<#input id="bigAvatar" name="封面图" value="${item.bigAvatar}" underline="true"/>-->
+                            <#input id="sex" name="性别" value="${item.sex}" />
+                            <#input id="signature" name="个性签名" value="${item.signature}" underline="true"/>
+                            <#input id="state" name="用户状态" value="${item.state}" underline="true"/>
+                            <#input id="createTime" name="注册时间" value="${item.createTime}" underline="true"/>
+                            <!--<#input id="updateTime" name="" value="${item.updateTime}" />-->
+                </div>
+            </div>
+            <input id="vip" type="hidden" value="${isVip}">
+            <div class="row" id="isVip">
+                <div class="col-sm-6 b-r">
+                    <#input id="start" name="砖石数量" underline="true" value="${start}"/>
+                </div>
+                <div class="col-sm-6">
+
+                    <!--<#input id="avatar" name="头像" underline="true"/>-->
+                    <!--<#input id="bigAvatar" name="封面图" underline="true"/>-->
+                    <!--<#input id="state" name="用户状态" underline="true"/>-->
+                    <!--<#input id="createTime" name="" underline="true"/>-->
+                    <!--<#input id="updateTime" name="" underline="true"/>-->
+                    <#select name="会员类型" id="typeId" underline="true" >
+                    <option value="0">非会员</option>
+                    <option value="1">1个月</option>
+                    <option value="2">3个月</option>
+                    <option value="3">6个月</option>
+                </#select>
+            </div>
+        </div>
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="SsoInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="SsoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+    $(function () {
+        debugger
+        if ($("#vip").val() === "0") {
+            $("#isVip").hide();
+        }
+
+        var obj = $("#typeId").get(0);
+        for(var i = 0; i < obj.options.length; i++){
+            var tmp = obj.options[i].value;
+            if(tmp == ${typeId}){
+                obj.options[i].selected = 'selected';
+                break;
+            }
+        }
+    })
+</script>
+<script src="${ctxPath}/static/modular/man/sso/sso_info.js"></script>
+@}

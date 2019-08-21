@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.VipTypeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.VipType">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="origin_money" property="originMoney" />
+        <result column="real_money" property="realMoney" />
+        <result column="total_start" property="totalStart" />
+        <result column="day_start" property="dayStart" />
+        <result column="top_start" property="topStart" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, origin_money, real_money, total_start, day_start, top_start, create_time
+    </sql>
+
+</mapper>

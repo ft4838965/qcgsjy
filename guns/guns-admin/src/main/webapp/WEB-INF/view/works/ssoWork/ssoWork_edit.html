@@ -1,0 +1,233 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <input id="baseId" name="图集Ids" value="${item.baseId}" type="hidden"/>
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <!--<#input id="id" name="主键ID" value="${item.id}" underline="true"/>-->
+                            <#input id="ssoId" name="用户的ID" value="${item.ssoId}" underline="true"/>
+                            <#input id="content" name="内容" value="${item.content}" underline="true"/>
+
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="type" name="类型" value="${item.type}" underline="true" />
+                            <#input id="check" name="审核状态" value="${item.check}" />
+                            <!--<#input id="baseId" name="图片表关联id" value="${item.baseId}" underline="true"/>-->
+                            <!--<#input id="likeCount" name="点赞量" value="${item.likeCount}" underline="true"/>-->
+                            <!--<#input id="commentCount" name="评论量" value="${item.commentCount}" underline="true"/>-->
+                            <!--<#input id="createTime" name="创建时间" value="${item.createTime}" underline="true"/>-->
+                            <!--<#input id="updateTime" name="更新时间" value="${item.updateTime}" />-->
+                </div>
+
+            </div>
+            <div id="imagesContent">
+                <fieldset style="margin-top: 3%">
+                    <legend>图集上传
+                        <span style="color:red ; vertical-align: middle">宽300像素:高300像素</span></legend>
+                    <div class="putimg">
+                        <input id="reportFile" name="reportFile" multiple type="file" data-show-caption="true">
+                    </div>
+                </fieldset>
+            </div>
+
+            <div id="thu">
+                <#avatar_lijun bili="宽300像素:高300像素" id="thumb" name="封面图" underline="true" avatarImg="${item.thumb}" value="${item.thumb}"/>
+            </div>
+            <div id="videoContent">
+                <fieldset style="margin-top: 3%">
+                    <legend>视频上传</legend>
+                    <div class="putimg">
+                        <input id="videoFile" name="videoFile" multiple type="file" data-show-caption="true">
+                    </div>
+                </fieldset>
+            </div>
+
+            <div id="hyfVideo">
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="审查通过" id="${item.id}" icon="fa-check" clickFun="SsoWorkInfoDlg.pass(this.id)"/>
+                    <#button btnCss="danger" name="拒绝通过" id="${item.id}" icon="fa-eraser" clickFun="SsoWorkInfoDlg.refuse(this.id)"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/works/ssoWork/ssoWork_info.js"></script>
+<script>
+    videoArray = ${videoArray};
+    hyfVideoFile = $('#hyfVideo');
+
+    $(function () {
+
+        var thumbUp = new $WebUpload("thumb","/tool/uploadFile");
+        thumbUp.setUploadBarId("progressBar");
+        thumbUp.init("/tool/uploadFile");
+
+        if($('#type').val() === "图文"){
+            $('#imagesContent').show();
+            $('#videoContent').hide();
+            $('#thu').hide();
+            $('#hyfVideo').hide();
+        }else {
+            $('#imagesContent').hide();
+            $('#thu').show();
+            $('#videoContent').show();
+        }
+        for (var i = 0; i < videoArray.length; i++) {
+            if (videoArray[i].key === "当前视频转码中请稍候!") {
+                hyfVideoFile.append("<div><fieldset><legend>当前视频转码中请稍候!转码完成后进行回显</legend> ");
+            } else {
+                hyfVideoFile.append("<div><fieldset><legend>视频回显</legend>   <div> <video src='" + videoArray[i].key + "'   controls='controls'> </video>  </div> </fieldset> </div> ")
+            }
+        }
+    });
+
+    /*反显文件*/
+    var baseId = $("#baseId").val();
+    var imageId = '';//上传成功的图片ID
+    //参数1:控件id、参数2:上传地址
+    var FileInput = function () {
+        var oFile = new Object();
+        //初始化fileinput控件（第一次初始化）
+        oFile.Init = function (ctrlName, uploadUrl, imgArray, imgArrayConfig) {
+            var control = $('#' + ctrlName);
+            //初始化上传控件的样式
+            control.fileinput({
+                language: 'zh',                                         //设置语言
+                uploadUrl: uploadUrl,                                   //上传的地址
+                overwriteInitial: false, 								//让预览图片和新选择的图片在同一页面进行操作
+                minFileCount: 1,										//最小上传数
+                maxFileCount: 10,										//最大上传数
+                allowedFileExtensions: ['jpg', 'gif', 'jpeg', 'png', 'pdf'],    //接收的文件后缀
+                showUpload: false,                                      //是否显示上传按钮
+                showRemove: false,										//是否显示移除按钮
+                showCaption: true,                                     //是否显示标题
+                browseClass: "btn btn-primary",                         //按钮样式
+                initialPreviewAsData: true,             //
+                initialPreview: imgArray,				//预览图片数组
+                // initialPreview: [ "https://cheshi654321.oss-cn-beijing.aliyuncs.com/sunshineFlowers","  https://cheshi654321.oss-cn-beijing.aliyuncs.com/sunshineFlowers"],
+                initialPreviewConfig: imgArrayConfig,//预览信息 配置   删除url以及参数配置
+                enctype: 'multipart/form-data',
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+                uploadExtraData: function (previewId, index) {
+                    return {'goodsTypeId': baseId};
+                }
+            });
+            //导入文件上传完成之后的事件
+            $("#reportFile").on("fileuploaded", function (event, data, previewId, index) {
+                //	toastr.success('上传成功！');
+            });
+            //删除预览图片事件
+            $('#reportFile').on('filepredelete', function (event, key) {
+                //$("#icon").val(imageId.replace(key,""));//去掉被删除图片
+            });
+        };
+        return oFile;
+    };
+    var picIds;
+    //初始化fileinput
+    var createFileInput = function (baseId) {
+        $.ajax({
+            type: "get",
+            url: "/ssoWork/img?baseId=" + baseId,
+            dataType: 'json',
+            async: false,//设置为同步操作就可以给全局变量赋值成功
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer "
+                    + window.localStorage.getItem("token"));
+            },
+            success: function (data) {
+                picIds = data.data;
+            }
+        });
+        var imgArray = [];//预览图片
+        var imgArrayConfig = [];//图片对应config数据
+        if (picIds != null && picIds != undefined && picIds != '') {
+            imgArray = new Array();
+            imgArrayConfig = new Array();
+            var picId = picIds.split(',');
+            for (var i = 0; i <= picId.length; i++) {
+                if (picId[i] != null && picId[i] != '') {//遍历图片id
+                    imgArray.push(picId[i]);//封装预览图片
+                    // imgArray.push("http://cheshi654321.oss-cn-beijing.aliyuncs.com/wocao");//封装预览图片
+                    //封装config
+                    var config = new Object();
+                    config.caption = picId[i] + ".jpg";
+                    config.url = '/muchPhoto/deletephoto';//删除图片接口
+                    config.key = picId[i];//设置删除图片时参数
+                    // config.type='video';
+                    imgArrayConfig.push(config);
+                }
+            }
+        }
+        var oFileInput = new FileInput();
+        //参数1:控件id、参数2:上传地址  3.初始化展示图片数组  4.图片预览参数、删除url配置
+        oFileInput.Init("reportFile", "/muchPhoto/upload", imgArray, imgArrayConfig);
+    }
+    //销毁fileinput
+    var destoryFileInput = function () {
+        $("#reportFile").fileinput('destroy');
+        createFileInput(baseId)
+    };
+
+    destoryFileInput();
+
+    /*初始化视频上传*/
+
+
+    //参数1:控件id、参数2:上传地址
+    var heyifanFileInput = function () {
+
+        var oFile = new Object();
+        //初始化fileinput控件（第一次初始化）
+        oFile.heyifanInit = function (ctrlName, uploadUrl, uploadId) {
+            var control = $('#' + ctrlName);
+            control.fileinput({
+                language: 'zh',                                         //设置语言
+                uploadUrl: uploadUrl,                                   //上传的地址
+                overwriteInitial: false, 								//让预览图片和新选择的图片在同一页面进行操作
+                minFileCount: 1,										//最小上传数
+                maxFileCount: 10,										//最大上传数
+                allowedFileExtensions: ['jpg', 'gif', 'jpeg', 'png', 'pdf', 'mp4'],    //接收的文件后缀
+                showUpload: false,                                      //是否显示上传按钮
+                showRemove: false,										//是否显示移除按钮
+                showCaption: true,                                     //是否显示标题
+                browseClass: "btn btn-primary",                         //按钮样式
+                initialPreviewAsData: true,             //
+                enctype: 'multipart/form-data',
+                previewFileIcon: "<i class='glyphicon glyphicon-king'></i>",
+                msgFilesTooMany: "选择上传的文件数量({n}) 超过允许的最大数值{m}！",
+                uploadExtraData: function (previewId, index) {
+                    return {'goodsTypeId': uploadId};
+                }
+            });
+            //导入文件上传完成之后的事件
+            $("#ctrlName").on("fileuploaded", function (event, data, previewId, index) {
+                toastr.success('上传成功!');
+            });
+            //删除预览图片事件
+            $('#ctrlName').on('filepredelete', function (event, key) {
+                toastr.success('删除成功!');
+            });
+        };
+        return oFile;
+    };
+
+    //初始化fileinput
+    var heyifanCreateFileInput = function () {
+        var FileInput = new heyifanFileInput();
+        //参数1:控件id、参数2:上传地址  3.初始化展示图片数组  4.图片预览参数、删除url配置
+        var videoId = $('#video').val();
+        FileInput.heyifanInit("videoFile", "/videoUtilOption/uploadVideo", videoId);
+    };
+    heyifanCreateFileInput();
+</script>
+@}

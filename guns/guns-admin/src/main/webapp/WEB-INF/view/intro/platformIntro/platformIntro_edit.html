@@ -1,0 +1,62 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <input id="id" type="hidden" value="${item.id}">
+
+            <fieldset style="margin-top: 3%" >
+                <h2>平台简介</h2>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        <div id="editor" class="editorHeight" >
+                        </div>
+                        <div style="display: none;" id="changeText">${item.intro}</div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="PlatformIntroInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="PlatformIntroInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript" src="${ctxPath}/static/js/plugins/wangEditor/wangEditor.js"></script>
+<script type="text/javascript" src="${ctxPath}/static/js/plugins/wangEditor/wangEditor-fullscreen-plugin.js"></script>
+<link href="${ctxPath}/static/js/plugins/wangEditor/wangEditor-fullscreen-plugin.css" rel="stylesheet">
+<script src="${ctxPath}/static/modular/intro/platformIntro/platformIntro_info.js"></script>
+<!--<script>
+    //初始化编辑器
+    var E = window.wangEditor;
+    var editorName = ('#editor');
+    var editor = new E(editorName);
+
+    editor.customConfig.uploadImgServer = '/muchPhoto/wangUpload';  // 上传图片到服务器
+    editor.customConfig.uploadImgTimeout = 300000;
+    editor.customConfig.uploadImgHooks = {
+        before: function (xhr, editor, files) {
+        },
+        success: function (xhr, editor, result) {
+        },
+        fail: function (xhr, editor, result) {
+            alert("上传图片失败!")
+        },
+        error: function (xhr, editor) {
+        },
+        timeout: function (xhr, editor) {
+        },
+        customInsert: function (insertImg, result, editor) {
+            var url = result.url
+            insertImg(url)
+        }
+    };
+    editor.create();
+    editor.txt.html(${item.intro});
+
+</script>-->
+
+@}

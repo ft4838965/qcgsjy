@@ -1,0 +1,98 @@
+.y_mask_box .y_mshare{position:absolute;top:50%;width:100%;height:50px;margin-top:-25px;text-align:center}.y_mask_box .y_mshare a{display:inline-block;width:70px;color:#fff}.y_mask_box .y_mshare a:before{content:' ';display:block;width:28px;height:28px;background:url(../images/share1.png) left top no-repeat;background-size:116px 58px;margin:0 auto}.y_mask_box .y_mshare .y_qqkj:before{background-position:0 0}.y_mask_box .y_mshare .y_qqq:before{background-position:-29px 0}.y_mask_box .y_mshare .y_txwb:before{background-position:-58px 0}.y_mask_box .y_mshare .y_xlwb:before{background-position:-87px 0}.y_more {display: block;margin-top: 10px;height: 45px;text-align: center;line-height: 45px;color: #777;font-size: 14px;}
+.gl_mask {
+    /*position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.4);
+    z-index: 999;*/
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 101;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.gl_mask .gl_share {
+    margin: 0.48rem auto 0;
+    width: 28.4rem;
+    height: 9.76rem;
+    background: url(../images/share.png) left top no-repeat;
+    background-size: 28.4rem 9.76rem;
+
+}
+.g_hd_mask {
+    position: absolute;
+    z-index: 50;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.4);
+}
+.g_hd_app {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 51;
+    width: 21.6rem;
+    height: 10.48rem;
+    -webkit-transform: translate(-50%, -50%);
+    background-color: #fff;
+    border-radius: 5px;
+}
+.g_hd_app h3 {
+    font-size: 1.12rem;
+    line-height: 1.92rem;
+    color: #4a4a4a;
+    margin: 2.48rem 0 0 0;
+    text-align: center;
+}
+.g_hd_app .g_list_tel .g_btn {
+    display: block;
+    width: 100%;
+    height: 38px;
+    border-radius: 5px;
+    border: solid 1px #ad8748;
+    font-size: 1.12rem;
+    color: #ad8748;
+    background-color: #fff;
+    text-align: center;
+}
+.g_hd_app .g_hd_close {
+    position: absolute;
+    top: 0.64rem;
+    right: 0.64rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    background: url(../img/chef/jump_close.png) left top no-repeat;
+    background-size: cover;
+}
+.g_hd_app .g_list_tel {
+    width: 17.36rem;
+    margin: 0 0 0 2.56rem;
+    padding-top: 1.6rem;
+}
+ol, ul {
+    list-style: none;
+}
+.down_banner .down_close {
+    position: absolute;
+    left: 1.12rem;
+    top: 1.44rem;
+    width: 1.6rem;
+    height: 1.6rem;
+    background: url(../img/ico_close_download.png) center center no-repeat;
+    background-size: 0.8rem 0.8rem;
+}
+.rank-a{
+    display: block;
+    position: relative;
+}
+@keyframes scaleDraw {
+    0%{ transform: scale(1);} 25%{ transform: scale(1.1);}
+    50%{ transform: scale(1);} 75%{ transform: scale(1.1);}
+}

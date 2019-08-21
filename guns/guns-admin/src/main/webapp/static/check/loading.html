@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta charset='UTF-8'>
+    <title>Simple Loader</title>
+    <style>
+        *{margin:0;padding:0;}
+        .loading{
+            height:100%;width:100%;position:fixed;background:rgba(255,255,255,1);
+
+        }
+        .loading >p{position:absolute;left:0;right:0;top:0;bottom:0;margin:auto;height:160px;width:160px;text-align: center;line-height:160px;font-size: 28px;color:#66C525;}
+        .loading p span{position:absolute;display:block;height:140px;width:140px;margin:10px;border-radius:50%;-webkit-box-shadow:0 2px 3px rgba(102,197,37,0.8); animation:loading ease 1s infinite;left:0;top:0;}
+
+        @keyframes loading{
+            0%{transform:rotate(0deg)}
+            100%{transform:rotate(360deg)}
+
+        }
+    </style>
+    <script>
+        document.onreadystatechange=function(){
+
+            if(document.readyState=='complete'){
+
+                //$('.loading').fadeIn();显示动画
+                $('.loading').fadeOut();//淡出动画
+
+            }
+
+        }
+    </script>
+</head>
+<body>
+<div class="loading">
+
+    <p>请稍等...<span></span></p>
+
+</div>
+</body>
+</html>

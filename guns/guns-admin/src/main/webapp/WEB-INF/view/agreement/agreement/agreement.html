@@ -1,0 +1,52 @@
+@layout("/common/_container.html"){
+<div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>各种《xxx协议》管理</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="input-group">
+                                    <div class="input-group-btn">
+                                        <button data-toggle="dropdown" class="btn btn-white dropdown-toggle" type="button">协议类型
+                                        </button>
+                                    </div>
+                                    <select id="condition" class="form-control">
+                                        <option value="">-------请选择-------</option>
+                                        <option value="0">《用户协议》</option>
+                                        <option value="1">《隐私政策》</option>
+                                        <option value="2">《提现规则》</option>
+                                        <option value="3">《邀请好友协议》</option>
+                                        <option value="4">《奖励规则》</option>
+                                        <option value="5">《排行榜规则》</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <#button name="搜索" icon="fa-search" clickFun="Agreement.search()"/>
+                            </div>
+                        </div>
+                        <div class="hidden-xs" id="AgreementTableToolbar" role="group">
+                            @if(shiro.hasPermission("/agreement/add")){
+                                <#button name="添加" icon="fa-plus" clickFun="Agreement.openAddAgreement()"/>
+                            @}
+                            @if(shiro.hasPermission("/agreement/update")){
+                                <#button name="修改" icon="fa-edit" clickFun="Agreement.openAgreementDetail()" space="true"/>
+                            @}
+                            @if(shiro.hasPermission("/agreement/delete")){
+                                <#button name="删除" icon="fa-remove" clickFun="Agreement.delete()" space="true"/>
+                            @}
+                        </div>
+                        <#table id="AgreementTable"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/agreement/agreement/agreement.js"></script>
+@}

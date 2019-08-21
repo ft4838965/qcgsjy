@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>返现列表</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="../layui/css/modules/layer/default/layer.css">
+    <link rel="stylesheet" type="text/css" href="../layui/css/layui.css">
+    <style>
+        *{margin:0;padding:0;}
+        .loading{
+            height:100%;width:100%;position:fixed;background:rgba(255,255,255,1);
+
+        }
+        .loading >p{position:absolute;left:0;right:0;top:0;bottom:0;margin:auto;height:160px;width:160px;text-align: center;line-height:160px;font-size: 28px;color:#66C525;}
+        .loading p span{position:absolute;display:block;height:140px;width:140px;margin:10px;border-radius:50%;-webkit-box-shadow:0 2px 3px rgba(102,197,37,0.8); animation:loading ease 1s infinite;left:0;top:0;}
+
+        @keyframes loading{
+            0%{transform:rotate(0deg)}
+            100%{transform:rotate(360deg)}
+
+        }
+    </style>
+</head>
+<body>
+<div class="loading">
+
+    <p>稍等...<span></span></p>
+
+</div>
+<table border="1" width="100%" id="table">
+   <thead>
+           <tr>
+               <th style="width: 20%;height: 50px;">用户昵称</th>
+               <th style="width: 20%;height: 50px;">用户消费</th>
+               <th style="width: 20%;height: 50px;">邀请消费</th>
+               <th style="width: 20%;height: 50px;">返现状态</th>
+               <th style="width: 20%;height: 50px;">操作</th>
+           </tr>
+   </thead>
+    <tbody id="tbody">
+
+    </tbody>
+</table>
+<div id="demo1" style="margin-top:10px;text-align: center;"></div>
+<div id="null" style="margin-top:10px;text-align: center;font-size: 25px;">暂无记录</div>
+<!--<div style="margin: 10px;">-->
+    <!--<button class="layui-btn" onclick='back(this)'>返回</button>-->
+<!--</div>-->
+<script src="../layui/layui.js" charset="utf-8"></script>
+<script src="../js/jquery.min.js?v=2.1.4"></script>
+<script src="../layui/lay/modules/layer.js"></script>
+<script>
+    var totalNum = 0;
+    function back() {
+        window.history.back(-1);
+    }
+    function paging(curr){
+        $("#null").hide();
+        $("#demo1").hide();
+        $.ajax({
+            url:"/ssoApi/invitedList?token="+getQueryString('token')+"&pageNo="+curr,
+            type:"post",
+            dataType:"json",
+            success:function(data){
+                    $('.loading').fadeOut();
+                    if (data.length>0){
+                        for (var i=0;i<data.length;i++) {
+                            var s = "";
+                            var ss = "";
+                            var status = "";
+                            if (data[i].status == "已返现"){
+                                s="取消";
+                                ss="返现";
+                                status="未返现";
+                            } else {
+                                s = "返现";
+                                ss="取消";
+                                status="已返现";
+                            }
+                            $("#tbody").append(" <tr id='"+data[i].id+"'>\n" +
+                                "        <td style='text-align:center;'>"+data[i].ssoId+"</td>\n" +
+                                "        <td style='text-align:center;'>"+data[i].ssoSpend+"</td>\n" +
+                                "        <td style='text-align:center;'>"+data[i].beSsoSpend+"</td>\n" +
+                                "        <td id='td:"+data[i].status+":"+i+"' style='text-align:center;'>"+data[i].status+"</td>\n" +
+                                "        <td style='text-align:center;'><button name='"+data[i].id+"' id='"+data[i].status+"' style='margin: 3px'  class=\"layui-btn\" onclick='giveMoney(this)' >"+s+"</button></td>\n" +
+                                "    </tr>");
+                            $("#tbody").append(" <tr id='"+data[i].id+"1'>\n" +
+                                "        <td style='text-align:center;'>"+data[i].ssoId+"</td>\n" +
+                                "        <td style='text-align:center;'>"+data[i].ssoSpend+"</td>\n" +
+                                "        <td style='text-align:center;'>"+data[i].beSsoSpend+"</td>\n" +
+                                "        <td id='td:"+data[i].status+":"+i+"' style='text-align:center;'>"+status+"</td>\n" +
+                                "        <td style='text-align:center;'><button name='"+data[i].id+"' id='"+status+":1' style='margin: 3px'  class=\"layui-btn\" onclick='giveMoney(this)' >"+ss+"</button></td>\n" +
+                                "    </tr>");
+                            $("#"+data[i].id+"1").hide();
+                        }
+                        $("#demo1").show();
+                    }else {
+                        $("#null").show();
+                    }
+
+
+            }
+        });
+    }
+    $(function () {
+        $("#null").hide();
+        $("#demo1").hide();
+    });
+
+    function giveMoney(obj) {
+        var split =obj.id.split(":");
+        if (split[0] == "已返现") {
+           // layer.msg("该用户已返现");
+            layer.confirm("您确定'取消'吗？", {
+                btn: ['确定','取消'] //按钮
+            }, function()
+            {
+                layer.closeAll('dialog');
+                $.ajax({
+                    url:"/ssoApi/giveMoney",
+                    type:"post",
+                    dataType:"json",
+                    data:{id:obj.name,token:getQueryString('token')},
+                    success:function(data){
+                        if(data === '200'){
+                            layer.msg("OK");
+                            //window.location.reload();
+                            if (split.length>1){
+                                $("#"+obj.name).show();
+                                $("#"+obj.name+"1").hide();
+                            } else {
+                                $("#"+obj.name).hide();
+                                $("#"+obj.name+"1").show();
+                            }
+                        }else {
+                            layer.msg("error");
+                        }
+                    }
+                });
+            });
+        }else {
+            layer.confirm("您确定'返现'吗？", {
+                btn: ['确定','取消'] //按钮
+            }, function()
+            {
+                layer.closeAll('dialog');
+                $.ajax({
+                    url:"/ssoApi/giveMoney",
+                    type:"post",
+                    dataType:"json",
+                    data:{id:obj.name,token:getQueryString('token')},
+                    success:function(data){
+                        if(data === '200'){
+                            layer.msg("OK");
+                            if (split.length>1){
+                                $("#"+obj.name).show();
+                                $("#"+obj.name+"1").hide();
+                            }else {
+                                $("#"+obj.name).hide();
+                                $("#"+obj.name+"1").show();
+                            }
+
+                           // window.location.reload();
+                        }else {
+                            layer.msg("error");
+                        }
+                    }
+                });
+            });
+        }
+    }
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+
+    layui.use(['laypage', 'layer'], function(){
+        var laypage = layui.laypage
+            ,layer = layui.layer;
+
+        $.ajax({
+            url:"/ssoApi/getTotalPage?token=8450997833b6475a85e3049ad6c00f24",
+            type:"post",
+            dataType:"json",
+            success:function(data){
+                //总页数大于页码总数
+                laypage.render({
+                    elem: 'demo1'
+                    ,count:data //数据总数
+                    ,limit:11
+                    ,jump: function(obj){
+                        $("#tbody").text('');
+                        $('.loading').fadeIn();
+                        paging(obj.curr);
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.SettingMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.Setting">
+        <id column="id" property="id" />
+        <result column="service_phone" property="servicePhone" />
+        <result column="ali_oss_access_key" property="aliOssAccessKey" />
+        <result column="ali_oss_access_id" property="aliOssAccessId" />
+        <result column="ali_sm_appcode" property="aliSmAppcode" />
+        <result column="yp_appkey" property="ypAppkey" />
+        <result column="gd_key" property="gdKey" />
+        <result column="ali_pay_app_id" property="aliPayAppId" />
+        <result column="ali_pay_app_private_key" property="aliPayAppPrivateKey" />
+        <result column="ali_pay_app_public_key" property="aliPayAppPublicKey" />
+        <result column="ali_pay_app_ali_notify_url" property="aliPayAppAliNotifyUrl" />
+        <result column="wechat_pay_app_id" property="wechatPayAppId" />
+        <result column="wechat_pay_mch_id" property="wechatPayMchId" />
+        <result column="wechat_pay_notify_url" property="wechatPayNotifyUrl" />
+        <result column="wechat_pay_key" property="wechatPayKey" />
+        <result column="wechat_app_id" property="wechatAppId" />
+        <result column="wechat_app_secret" property="wechatAppSecret" />
+        <result column="wechat_access_token" property="wechatAccessToken" />
+        <result column="wechat_ticket" property="wechatTicket" />
+        <result column="android_version" property="androidVersion" />
+        <result column="android_apk_url" property="androidApkUrl" />
+        <result column="money_give_man" property="moneyGiveMan" />
+        <result column="money_give_women" property="moneyGiveWomen" />
+        <result column="publish_switch" property="publishSwitch" />
+        <result column="remind" property="remind" />
+        <result column="start_get_tel" property="startGetTel" />
+        <result column="tel" property="tel" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, service_phone, ali_oss_access_key, ali_oss_access_id, ali_sm_appcode, yp_appkey, gd_key, ali_pay_app_id, ali_pay_app_private_key, ali_pay_app_public_key, ali_pay_app_ali_notify_url, wechat_pay_app_id, wechat_pay_mch_id, wechat_pay_notify_url, wechat_pay_key, wechat_app_id, wechat_app_secret, wechat_access_token, wechat_ticket, android_version, android_apk_url, remind , start_get_tel, tel
+    </sql>
+
+</mapper>

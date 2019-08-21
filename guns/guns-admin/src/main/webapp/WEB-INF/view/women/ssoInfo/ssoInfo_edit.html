@@ -1,0 +1,96 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+            <input type="hidden" id="origin_money" name="账户总额" value="${money}">
+            <div class="row">
+                <#avatar_lijun id="avatar" bili="宽300像素:高300像素" name="头像" avatarImg="${avatar}" underline="true"/>
+                <#avatar_lijun id="bigAvatar" bili="宽510像素:高812像素" name="封面图" avatarImg="${bigAvatar}" underline="true"/>
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="编号" value="${item.id}" underline="true"/>
+                            <#input id="ssoId" name="登录账号" value="${item.ssoId}" underline="true"/>
+                            <#input id="money" name="账户总额" value="${money}" underline="true"/>
+                            <#input id="age" name="年龄" value="${item.age}" underline="true"/>
+                            <#input id="tall" name="身高" value="${item.tall}" underline="true"/>
+                            <#input id="weight" name="体重" value="${item.weight}" />
+                            <#input id="advantege" name="个人优势" value="${item.advantege}" underline="true"/>
+                            <#select name="封面审核" id="checkBigAvatar" underline="true">
+                            <option value="0">未审查</option>
+                            <option value="1">通过</option>
+                            <option value="2">未通过</option>
+                            </#select>
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="realName" name="真实姓名" value="${item.realName}" underline="true"/>
+                            <#input id="idCard" name="身份证" value="${item.idCard}" underline="true"/>
+                            <#input id="areaCode" name="居住地市区编号" value="${item.areaCode}" underline="true"/>
+                            <#input id="address" name="详细地址" value="${item.address}" underline="true"/>
+                            <#input id="sort" name="人气值" value="${item.sort}" underline="true"/>
+                            <#select name="星评分数" id="startRemark" underline="true">
+                            </#select>
+                            <!--<#input id="tagIds" name="标签集合" value="${item.tagIds}" underline="true"/>-->
+                            <div id="guess" role="application" style="margin-bottom: 3%">
+                                <label>
+                                    标签集合
+                                </label>
+                                <div class="demo-section k-content">
+                                    <!--<h2>请选择标签</h2>-->
+                                    <select id="tagIds" multiple="multiple" data-placeholder="请选择给她的标签">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="hr-line-dashed"></div>
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="SsoInfoInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="SsoInfoInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/women/ssoInfo/ssoInfo_info.js"></script>
+<script>
+    multArrays = ${multArr};
+    $(function() {
+
+       // $("#checkBigAvatar").val("${checkBigAvatar}");
+
+        var obj = $("#checkBigAvatar").get(0);
+        for(var i = 0; i < obj.options.length; i++){
+            var tmp = obj.options[i].value;
+            if(tmp == ${checkBigAvatar}){
+                obj.options[i].selected = 'selected';
+                break;
+            }
+        }
+
+        $('#startRemark').append('<option value="0.5">0.5</option>').append('<option value="1.0">1</option>').append('<option value="1.5">1.5</option>').append('<option value="2.0">2.0</option>').append('<option value="2.5">2.5</option>').append('<option value="3.0">3.0</option>').append('<option value="3.5">3.5</option>').append('<option value="4.0">4.0</option>').append('<option value="4.5">4.5</option>').append(' <option value="5.0">5.0</option>');
+        $("#startRemark").val("${item.startRemark}");
+
+        //初始化标签集合
+        var videoTagData = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: "/tag/list",
+                    dataType: "json"
+                }
+            }
+        });
+        $("#tagIds").kendoMultiSelect({
+            placeholder: "请选择给她的标签",
+            dataTextField: "name",
+            dataValueField: "id",
+            autoBind: true,
+            dataSource: videoTagData,
+            value: multArrays
+        });
+
+    });
+</script>
+@}

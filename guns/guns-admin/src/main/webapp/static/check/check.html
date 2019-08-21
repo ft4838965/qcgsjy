@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>审核封面和作品</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="../layui/css/modules/layer/default/layer.css">
+    <link rel="stylesheet" type="text/css" href="../layui/css/layui.css">
+    <style>
+        *{margin:0;padding:0;}
+        .loading{
+            height:100%;width:100%;position:fixed;background:rgba(255,255,255,1);
+
+        }
+        .loading >p{position:absolute;left:0;right:0;top:0;bottom:0;margin:auto;height:160px;width:160px;text-align: center;line-height:160px;font-size:28px;color:#66C525;}/*#f00*/
+        .loading p span{position:absolute;display:block;height:140px;width:140px;margin:10px;border-radius:50%;-webkit-box-shadow:0 2px 3px rgba(102,197,37,0.8); animation:loading ease 1s infinite;left:0;top:0;}
+
+        @keyframes loading{
+            0%{transform:rotate(0deg)}
+            100%{transform:rotate(360deg)}
+
+        }
+    </style>
+</head>
+
+<body>
+<div class="loading">
+
+    <p>稍等...<span></span></p>
+
+</div>
+<div style="float: right;margin: 10px 5px">
+    <button class="layui-btn" onclick='giveMoney()'>去返现</button>
+</div>
+<table border="1" width="100%" id="table">
+        <tr>
+            <th style="width: 15%;height: 50px;">电话</th>
+            <th style="width: 70%;height: 50px;">图片或视频</th>
+            <th style="width: 15%;height: 50px;">操作</th>
+        </tr>
+    </table>
+</body>
+
+<script src="../layui/layui.js" charset="utf-8"></script>
+<script src="../js/jquery.min.js?v=2.1.4"></script>
+<script src="../layui/lay/modules/layer.js"></script>
+<script>
+    $(function () {
+        $.ajax({
+            url:"/ssoApi/check?token="+getQueryString('token'),
+            type:"post",
+            dataType:"json",
+            success:function(data){
+                $('.loading').fadeOut();
+               //alert(data.bigAvatorList[0].imgUrl);
+               for (var a=0;a<data.bigAvatorList.length;a++) {
+                   $("#table").append("<tr id='vator"+a+"'><td style='width: 20%;height: 50px;text-align:center;'> <a style='width: 100%;color: #0C0C0C' href='tel:"+data.bigAvatorList[a].phone+"'>拨通</a></td><td style=\"width: 75%;height: 50px;text-align:center;\"> <img src=\""+data.bigAvatorList[a].imgUrl+"\" style=\"width: 200px;height: 200px;\" \> "+"</td><td style=\"width: 25%;height: 50px;align:center\">"
+                   +  "<div style='text-align: center;' class=\"layui-btn-group\">\n" +
+                       "                       <button name='avator:1:"+data.bigAvatorList[a].imgUrl+":vator"+a+"' style='margin-bottom: 10px;' class=\"layui-btn\" onclick='check(this)'>通过</button>\n" +
+                       "                       <button name='avator:2:"+data.bigAvatorList[a].imgUrl+":vator"+a+"' style='margin-bottom: 10px' class=\"layui-btn \" onclick='check(this)'>不行</button>\n" +
+                       "                       <button name='avator:3:"+data.bigAvatorList[a].imgUrl+":vator"+a+"' class=\"layui-btn \" onclick='info(this)'>更多</button>\n" +
+                       "                       </div></td>");
+               }7
+
+                for (var a=0;a<data.mediaList.length;a++) {
+                    if (data.mediaList[a].type === "0"){
+                        $("#table").append("<tr id='media"+a+"'><td style='width: 20%;height: 50px;text-align:center;'>作品"+"</td><td style=\"width: 75%;height: 50px;text-align:center;\"> <img src=\""+data.mediaList[a].url+"\" style=\"width: 200px;height: 200px;\" \> "+"</td><td style=\"width: 25%;height: 50px;align:center\">"
+                            +  "<div style='text-align: center;' class=\"layui-btn-group\">\n" +
+                            "                       <button name='media:1:"+data.mediaList[a].id+":media"+a+"' style='margin-bottom: 10px' class=\"layui-btn\" onclick='check(this)'>通过</button>\n" +
+                            "                       <button name='media:2:"+data.mediaList[a].id+":media"+a+"' style='margin-bottom: 10px' class=\"layui-btn \" onclick='check(this)'>不行</button>\n" +
+                            "                       <button name='media:3:"+data.mediaList[a].id+":media"+a+"'  class=\"layui-btn\" onclick='info(this)'>更多</button>\n" +
+                            "                       </div></td>");
+                    } else {
+                        $("#table").append("<tr id='"+data.mediaList[a].id+"'><td style='width: 15%;height: 50px;text-align:center;'>作品</td><td style=\"width: 70%;height: 50px;text-align:center;\"> <video src=\""+data.mediaList[a].url+"\" controls='controls'  poster='"+data.mediaList[a].thumb+"' style=\"width: 200px;height: 200px;\" \> "+"</td><td style=\"width: 15%;height: 50px;align:center\">"
+                            +  "<div style='text-align: center;' class=\"layui-btn-group\">\n" +
+                            "                       <button name='media:1:"+data.mediaList[a].id+"' style='margin-bottom: 10px' class=\"layui-btn\" onclick='check(this)' >通过</button>\n" +
+                            "                       <button name='media:2:"+data.mediaList[a].id+"' style='margin-bottom: 10px' class=\"layui-btn \" onclick='check(this)'>不行</button>\n" +
+                            "                       <button name='media:3:"+data.mediaList[a].id+"'  class=\"layui-btn\" onclick='info(this)' >更多</button>\n" +
+                            "                       </div></td>");
+                    }
+                }
+
+
+                /*for (var a=0;a<data.worksList.length;a++) {
+                    if (data.worksList[a].type === "1"){
+                        var str = "";
+                        for (var b=0;b<data.worksList[a].mediaList.length;b++) {
+                            var bili = "";
+                            if(data.worksList[a].mediaList.length==1){
+                                bili = 80
+                            }else if (data.worksList[a].mediaList.length==2){
+                                bili = 40
+                            } else {
+                                bili = (data.worksList[a].mediaList.length/10)*100;
+                            }
+                            if (b==0) {
+                                str = str + "<tr id='"+data.worksList[a].id+"'><td style='width: 15%;height: 50px;text-align:center;'>作品</td><td style=\"width:100%;height: 50px;text-align:center;\"> <img src=\""+data.worksList[a].mediaList[b].url+"\" style=\"width:"+bili+"%;height: 150px;\" \> "
+                            }else if (b==(data.worksList[a].mediaList.length-1)){
+                                str = str +"<img src=\""+data.worksList[a].mediaList[b].url+"\" style=\"width:"+bili+"%;height: 150px;\" \> "+"</td><td style=\"width: 25%;height: 50px;align:center\">"
+                                    +  "<div name='div' style='text-align: center;' class=\"layui-btn-group\">\n" +
+                                    "                       <button name='work:1:"+data.worksList[a].id+"' style='margin-bottom: 20px' class=\"layui-btn\" onclick='check(this)'>通过</button>\n" +
+                                    "                       <button name='work:2:"+data.worksList[a].id+"' class=\"layui-btn \" onclick='check(this)'>不行</button>\n" +
+                                    "                       </div></td>"
+                            } else {
+                                str = str + "<img src=\""+data.worksList[a].mediaList[b].url+"\" style=\"width:"+bili+"%;height: 150px;\" \> "
+                            }
+
+                        }
+                        $("#table").append(str);
+                    }else {
+                        $("#table").append("<tr id='"+data.worksList[a].id+"'><td style='width: 15%;height: 50px;text-align:center;'>作品</td><td style=\"width: 100%;height: 50px;text-align:center;\"> <video src=\""+data.worksList[a].mediaList[0].url+"\" controls='controls' poster='"+data.worksList[a].thumb+"' style=\"width: 100%;height: 150px;\" \> "+"</td><td style=\"width: 25%;height: 50px;align:center\">"
+                            +  "<div style='text-align: center;' class=\"layui-btn-group\">\n" +
+                            "                       <button name='work:1:"+data.worksList[a].id+"' style='margin-bottom: 20px' class=\"layui-btn\" onclick='check(this)' >通过</button>\n" +
+                            "                       <button name='work:2:"+data.worksList[a].id+"' class=\"layui-btn \" onclick='check(this)'>不行</button>\n" +
+                            "                       </div></td>");
+                    }
+
+                }*/
+            }
+        });
+    });
+    function check(obj) {
+        let splice = obj.name.split(":");
+        if (splice[1] === "1"){
+            str = "您确定审核'通过'吗？";
+        } else {
+            str = "您确定审核'不通过'吗？"
+        }
+        layer.confirm(str, {
+            btn: ['确定','取消'] //按钮
+        }, function()
+        {
+            layer.closeAll('dialog');
+            $.ajax({
+                url:"/ssoApi/checkPassOrNo",
+                type:"post",
+                dataType:"json",
+                data:{key:obj.name,token:getQueryString('token')},
+                success:function(data){
+                    if(data === '200'){
+                        layer.msg("OK");
+                        var x = obj.name.split(":");
+                        if (x[1] === "3"){
+                            window.location.reload();
+                        }else {
+                            $("#"+x[x.length-1]).remove();
+                        }
+                    }else {
+                        layer.msg("error");
+                    }
+                }
+            });
+        });
+    }
+    function info(obj) {
+        window.location.href="/static/check/ssoInfo.html?param="+obj.name+"&token="+getQueryString('token');
+    }
+    function giveMoney(obj) {
+        window.location.href="/static/check/giveMoney.html?token="+getQueryString('token');
+    }
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+
+</script>
+</html>

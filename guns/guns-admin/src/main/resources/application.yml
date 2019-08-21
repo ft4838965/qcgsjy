@@ -1,0 +1,96 @@
+server:
+  port: 7777
+
+guns:
+  swagger-open: true              #是否开启swagger (true/false)
+  kaptcha-open: false             #是否开启登录时验证码 (true/false)
+#  file-upload-path: d:/tmp       #文件上传目录(不配置的话为java.io.tmpdir目录)
+  spring-session-open: false      #是否开启spring session,如果是多机环境需要开启(true/false)
+  session-invalidate-time: 1800     #session失效时间(只在单机环境下生效，多机环境在SpringSessionConfig类中配置) 单位：秒
+  session-validation-interval: 900  #多久检测一次失效的session(只在单机环境下生效) 单位：秒
+
+# 加解密根密码
+jasypt:
+  encryptor:
+    password: G0CvDz7oJn6 #根密码
+
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+  profiles:
+    active: @spring.active@
+  mvc:
+    static-path-pattern: /static/**
+    view:
+      prefix: /WEB-INF/view
+  devtools:
+    restart:
+      enabled: false
+      additional-paths: src/main/java
+      exclude: static/**,WEB-INF/view/**
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+
+
+mybatis-plus:
+  typeAliasesPackage: com.stylefeng.guns.modular.system.model
+
+log:
+  path: guns-logs
+
+---
+
+spring:
+  profiles: local
+  datasource:
+    url: jdbc:mysql://39.108.73.107:3306/social?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: ENC(agMoWB1KUbJzsFKdwoY7Ww==)
+    db-name: social #用来搜集数据库的所有表
+    filters: mergeStat
+#    filters: wall,mergeStat 配置wall的话,一些手写的SQL语句就会被防注入机制拦截,但是不配置的话,就会有被SQL注入攻击的危险
+#多数据源情况的配置
+guns:
+  muti-datasource:
+    open: false
+    url: jdbc:mysql://39.108.73.107:3306/guns_test?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    dataSourceNames:
+      - dataSourceGuns
+      - dataSourceBiz
+
+---
+
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://120.78.73.245:3306/social_dev?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    db-name: guns #用来搜集数据库的所有表
+    filters: wall,mergeStat
+
+---
+
+spring:
+  profiles: test
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/guns?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    filters: wall,mergeStat
+
+---
+
+spring:
+  profiles: produce
+  datasource:
+      url: jdbc:mysql://127.0.0.1:3306/guns?autoReconnect=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=CONVERT_TO_NULL&useSSL=false&serverTimezone=Asia/Shanghai
+      username: root
+      password: root
+      filters: wall,mergeStat
+

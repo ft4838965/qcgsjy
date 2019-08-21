@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stylefeng.guns.modular.system.dao.MessageMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.Message">
+        <id column="id" property="id" />
+        <result column="sso_id" property="ssoId" />
+        <result column="message_sso_id" property="messageSsoId" />
+        <result column="type" property="type" />
+        <result column="content" property="content" />
+        <result column="official_message_type" property="officialMessageType" />
+        <result column="look" property="look" />
+        <result column="work_id" property="workId" />
+        <result column="sso_ids_for_sys" property="ssoIdsForSys" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, sso_id, message_sso_id, type, content, official_message_type, look, work_id, sso_ids_for_sys, create_time
+    </sql>
+
+</mapper>
