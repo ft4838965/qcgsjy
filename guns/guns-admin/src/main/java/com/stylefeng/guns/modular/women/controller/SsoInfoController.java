@@ -9,6 +9,7 @@ import com.stylefeng.guns.core.support.DateTime;
 import com.stylefeng.guns.modular.account.service.ISsoAccountService;
 import com.stylefeng.guns.modular.man.service.ISsoService;
 import com.stylefeng.guns.modular.message.service.IMessageService;
+import com.stylefeng.guns.modular.setting.service.ISettingService;
 import com.stylefeng.guns.modular.ssoaccoun.service.ISsoAccountFlowService;
 import com.stylefeng.guns.modular.system.dao.Dao;
 import com.stylefeng.guns.modular.system.model.*;
@@ -370,6 +371,8 @@ public class SsoInfoController extends BaseController {
         return SUCCESS_TIP;
     }
 
+    @Autowired
+    private ISettingService settingService;
 
     /**
      * 修改女用户
@@ -390,13 +393,19 @@ public class SsoInfoController extends BaseController {
             List<Tag> tagList = tagService.selectList(null);
             for (String tagId : tagIds) {
                 for (Tag tag:tagList) {
-                    if (tag.getId() == Integer.parseInt(tagId)){
+//                    if (tag.getId() == Integer.parseInt(tagId)){
+                    if (tag.getId() == Integer.parseInt(Tool.isNull(tagId)?"-1":tagId)){
                         stringBuffer.append(tagId+":"+tag.getName()+":"+RandomUtil.getRandom(2)+",");
                     }
                 }
             }
             ssoInfo.setTagIds(stringBuffer+"");
             dao.updateBySQL("UPDATE t_sso SET avatar = "+"'"+sso.getAvatar()+"'"+",big_avatar = "+"'"+sso.getBigAvatar()+"'"+",check_big_avatar = "+"'"+sso.getCheckBigAvatar()+"'"+" WHERE sso_id = "+ssoInfo.getSsoId());
+            //发短信通知
+            Sso sso_=ssoService.selectOne(new EntityWrapper<Sso>().eq("sso_id",ssoInfo.getSsoId()));
+            if (sso_!=null&&"1".equals(sso_.getSex())&&"1".equals(sso.getCheckBigAvatar())){
+                String str=new DuanXin_LiJun(settingService.selectById(1).getYpAppkey(),"3152696").sendAllSms(sso_.getPhone(),(sso_.getNickName()+"("+sso_.getPhone()+")"));
+            }
             if (!money.equals(origin_money)){
                 dao.updateBySQL("update t_sso_account set useable_balance="+money+"where sso_id='"+ssoInfo.getSsoId()+"'");
 

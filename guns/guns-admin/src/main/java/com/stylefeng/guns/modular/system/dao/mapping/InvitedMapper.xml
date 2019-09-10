@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.stylefeng.guns.modular.system.model.Invited">
         <id column="id" property="id" />
+        <result column="super_sso_id" property="superSsoId" />
         <result column="sso_id" property="ssoId" />
         <result column="be_sso_id" property="beSsoId" />
         <result column="create_time" property="createTime" />
@@ -13,7 +14,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, sso_id, be_sso_id, create_time, status
+        id, super_sso_id, sso_id, be_sso_id, create_time, status
     </sql>
 
 </mapper>

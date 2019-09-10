@@ -4,6 +4,10 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Serializable;
 
 /**
@@ -15,6 +19,9 @@ import java.io.Serializable;
  * @since 2019-03-12
  */
 @TableName("t_super_sso")
+@Setter
+@Getter
+@ToString
 public class SuperSso extends Model<SuperSso> {
 
     private static final long serialVersionUID = 1L;
@@ -32,56 +39,26 @@ public class SuperSso extends Model<SuperSso> {
      */
     private String phone;
     /**
+     * 0:未审核,1:已审核
+     */
+    private String check;
+    /**
+     * 余额
+     */
+    private Double balance;
+    /**
+     * 邀请合伙人ID
+     */
+    private String pid;
+    /**
      * 创建时间
      */
     @TableField("create_time")
     private Date createTime;
-
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 
     @Override
     protected Serializable pkVal() {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "SuperSso{" +
-        "id=" + id +
-        ", name=" + name +
-        ", phone=" + phone +
-        ", createTime=" + createTime +
-        "}";
-    }
 }

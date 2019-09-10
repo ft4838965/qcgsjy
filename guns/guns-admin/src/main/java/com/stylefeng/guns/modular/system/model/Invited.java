@@ -6,6 +6,10 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Serializable;
 
 /**
@@ -17,6 +21,9 @@ import java.io.Serializable;
  * @since 2019-03-21
  */
 @TableName("t_invited")
+@Getter
+@Setter
+@ToString
 public class Invited extends Model<Invited> {
 
     private static final long serialVersionUID = 1L;
@@ -26,6 +33,11 @@ public class Invited extends Model<Invited> {
      */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+    /**
+     * 邀请合伙人id
+     */
+    @TableField("super_sso_id")
+    private String superSsoId;
     /**
      * 用户id
      */
@@ -57,50 +69,10 @@ public class Invited extends Model<Invited> {
     private Date createTime;
 
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getSsoId() {
-        return ssoId;
-    }
-
-    public void setSsoId(String ssoId) {
-        this.ssoId = ssoId;
-    }
-
-    public String getBeSsoId() {
-        return beSsoId;
-    }
-
-    public void setBeSsoId(String beSsoId) {
-        this.beSsoId = beSsoId;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 
     @Override
     protected Serializable pkVal() {
         return this.id;
     }
 
-    @Override
-    public String toString() {
-        return "Invited{" +
-        "id=" + id +
-        ", ssoId=" + ssoId +
-        ", beSsoId=" + beSsoId +
-        ", createTime=" + createTime +
-        "}";
-    }
 }

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="renderer" content="webkit">
+		<title>我的收益</title>
+		<link rel="stylesheet" href="../../../static/h5static/static/css/style.css" />
+		<script type="text/javascript" src="../../../static/h5static/static/js/jquery-3.3.1.min.js" ></script>
+
+	</head>
+	<body>
+		<div class="bodyMain">
+			<div class="topTextBox">
+				<div class="text1">￥${balance!}</div>
+				<div class="text2">平台收到提现申请后，三个工作日内会联系转账</div>
+			</div>
+			<div class="btnBox">
+				<button class="TXbtn" id="tixian">提现</button>
+<!--				<a class="ms">提现说明</a>-->
+			</div>
+		</div>
+	</body>
+<script>
+if('${id!}'.length>0)$('#tixian').click(function () {
+    $.ajax({
+        type: 'POST',
+        url: 'withdraw',
+        data:{id:'${id!}'},
+        dataType: 'json',
+        success: function(r){
+            showToast(r.message,'max-content','50px')
+            setTimeout(function () {
+                location.reload();
+            },1500);
+        },
+        error: function (e) {
+            alert(JSON.stringify(e))
+        }
+    });
+});
+function showToast(text, width, radius) {
+    var widthDiv = width ? width : '90%';//自定义宽度
+    var radiusDiv = radius ? radius : '50px';//自定义边框角度
+    //此处你还可以定义 位置、文字颜色大小、背景色、显示时长等等
+
+    var showToastDiv = "<div id='showToastWraper' style='position:fixed;z-index:999;top:35%;right:0;left:0;width:90%;margin:auto;background:rgba(0,0,0,0.6);filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7f000000,endColorstr=#7f000000);text-align:center;padding:10px 20px;color:#dcdcdc;border-radius:50px;'></div>";
+    var showToastWraper = $("#showToastWraper");
+    var isExat = showToastWraper.length;
+
+    if (!isExat) {
+        //第一次创建元素 并且设置元素把显示状态的停止掉、渐隐显示、显示文本内容、设置自定义样式、1.5s后渐隐消失
+        $(document.body).append(showToastDiv);
+        $("#showToastWraper").stop().fadeIn(300).html(text).css({ width: widthDiv, borderRadius: radiusDiv }).delay(1500).fadeOut(500);
+    } else {
+        //第二次 就不需要创建元素了减少dom操作
+        showToastWraper.stop().fadeIn(300).html(text).css({ width: widthDiv, borderRadius: radiusDiv }).delay(1500).fadeOut(500);
+    }
+}
+</script>
+</html>

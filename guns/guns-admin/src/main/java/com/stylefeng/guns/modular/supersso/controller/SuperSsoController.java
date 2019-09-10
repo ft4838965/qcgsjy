@@ -1,7 +1,11 @@
 package com.stylefeng.guns.modular.supersso.controller;
 
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.stylefeng.guns.core.base.controller.BaseController;
+import com.stylefeng.guns.core.base.tips.ErrorTip;
 import com.stylefeng.guns.core.support.DateTime;
+import com.stylefeng.guns.modular.system.dao.Dao;
+import com.stylefeng.guns.util.Tool;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,6 +16,8 @@ import com.stylefeng.guns.core.log.LogObjectHolder;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.stylefeng.guns.modular.system.model.SuperSso;
 import com.stylefeng.guns.modular.supersso.service.ISuperSsoService;
+
+import java.util.List;
 
 /**
  * 合伙人控制器
@@ -27,7 +33,8 @@ public class SuperSsoController extends BaseController {
 
     @Autowired
     private ISuperSsoService superSsoService;
-
+    @Autowired
+    private Dao dao;
     /**
      * 跳转到合伙人首页
      */
@@ -61,7 +68,10 @@ public class SuperSsoController extends BaseController {
     @RequestMapping(value = "/list")
     @ResponseBody
     public Object list(String condition) {
-        return superSsoService.selectList(null);
+//        List<SuperSso> superSsoList=superSsoService.selectList(Tool.isNull(condition)?null:new EntityWrapper<SuperSso>().eq("name",condition));
+//        superSsoList.parallelStream().forEach(superSso->superSso.setCheck("1".equals(superSso.getCheck())?"<span style='color:green'>已审核</span>":"<span style='color:red'>待审核</span>"));
+//        return superSsoList;
+        return dao.selectBySQL("select a.id,a.`name`,a.phone,if(a.`check`='1','<span style=\"color:green\">已审核</span>','<span style=\"color:red\">待审核</span>')`check`,a.balance,(b.`name`)pid from t_super_sso a left join t_super_sso b ON b.id=a.pid");
     }
 
     /**
@@ -70,6 +80,9 @@ public class SuperSsoController extends BaseController {
     @RequestMapping(value = "/add")
     @ResponseBody
     public Object add(SuperSso superSso) {
+        if(Tool.isNull(superSso.getPhone()))return new ErrorTip(400,"请输入手机号");
+        SuperSso tempSuperSso=superSsoService.selectOne(new EntityWrapper<SuperSso>().eq("phone",superSso.getPhone()));
+        if(tempSuperSso!=null)return new ErrorTip(500,"该手机号用户已存在");
         superSso.setCreateTime(new DateTime());
         superSsoService.insert(superSso);
         return SUCCESS_TIP;

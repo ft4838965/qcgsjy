@@ -1,17 +1,134 @@
 @layout("/common/_container.html"){
+<style>
+    .lcs_wrap {
+        display: inline-block;
+        direction: ltr;
+        height: 28px;
+        vertical-align: middle;
+    }
+    .lcs_wrap input {
+        display: none;
+    }
+
+    .lcs_switch {
+        display: inline-block;
+        position: relative;
+        width: 73px;
+        height: 28px;
+        border-radius: 30px;
+        background: #ddd;
+        overflow: hidden;
+        cursor: pointer;
+
+        -webkit-transition: all .2s ease-in-out;
+        -ms-transition: 	all .2s ease-in-out;
+        transition: 		all .2s ease-in-out;
+    }
+    .lcs_cursor {
+        display: inline-block;
+        position: absolute;
+        top: 3px;
+        width: 22px;
+        height: 22px;
+        border-radius: 100%;
+        background: #fff;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 4px 0 rgba(0, 0, 0, 0.1);
+        z-index: 10;
+
+        -webkit-transition: all .2s linear;
+        -ms-transition: 	all .2s linear;
+        transition: 		all .2s linear;
+    }
+    .lcs_label {
+        font-family: "Trebuchet MS", Helvetica, sans-serif;
+        font-size: 12px;
+        letter-spacing: 1px;
+        line-height: 18px;
+        color: #fff;
+        font-weight: bold;
+        position: absolute;
+        width: 33px;
+        top: 5px;
+        overflow: hidden;
+        text-align: center;
+        opacity: 0;
+
+        -webkit-transition: all .2s ease-in-out .1s;
+        -ms-transition: 	all .2s ease-in-out .1s;
+        transition: 		all .2s ease-in-out .1s;
+    }
+    .lcs_label.lcs_label_on {
+        left: -70px;
+        z-index: 6;
+    }
+    .lcs_label.lcs_label_off {
+        right: -70px;
+        z-index: 5;
+    }
+
+
+    /* on */
+    .lcs_switch.lcs_on {
+        background: #75b936;
+        box-shadow: 0 0 2px #579022 inset;
+    }
+    .lcs_switch.lcs_on .lcs_cursor {
+        left: 48px;
+    }
+    .lcs_switch.lcs_on .lcs_label_on {
+        left: 10px;
+        opacity: 1;
+    }
+
+
+    /* off */
+    .lcs_switch.lcs_off {
+        background: #b2b2b2;
+        box-shadow: 0px 0px 2px #a4a4a4 inset;
+    }
+    .lcs_switch.lcs_off .lcs_cursor {
+        left: 3px;
+    }
+    .lcs_switch.lcs_off .lcs_label_off {
+        right: 10px;
+        opacity: 1;
+    }
+
+
+    /* disabled */
+    .lcs_switch.lcs_disabled {
+        opacity: 0.65;
+        filter: alpha(opacity=65);
+        cursor: default;
+    }
+</style>
 <div class="ibox float-e-margins">
     <div class="ibox-content">
         <div class="form-horizontal">
 
             <div class="row">
                 <div class="col-sm-6 b-r">
-                            <#input id="id" name="编号" value="${item.id}" underline="true"/>
+                    <input id="id" name="id" value="${item.id}" type="hidden"/>
                             <#input id="name" name="名称" value="${item.name}" />
                 </div>
 
                 <div class="col-sm-6">
-                            <#input id="phone" name="手机号" value="${item.phone}" underline="true"/>
-                            <#input id="createTime" name="创建时间" value="${item.createTime}" />
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">手机号</label>
+                        <div class="col-sm-9">
+                           <p>${item.phone!}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">审核</label>
+                        <div class="col-sm-9">
+                            <input type="checkbox" name="check"
+                                   @if(item.check=='1'){
+                                   checked
+                                   @}
+                                   id="check" class="lcs_check" autocomplete="off" />
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -25,5 +142,7 @@
 
     </div>
 </div>
+
+<script src="${ctxPath}/static/modular/supersso/superSso/lc_switch.min.js"></script>
 <script src="${ctxPath}/static/modular/supersso/superSso/superSso_info.js"></script>
 @}

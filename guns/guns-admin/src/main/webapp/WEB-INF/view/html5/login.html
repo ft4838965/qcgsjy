@@ -196,7 +196,13 @@
         if (r != null) return unescape(r[2]); return null;
     }
     function userLogin() {
-        $.post('/ssoApi/ssoLogin',{phone:$.trim($('#tel').val()),code:$.trim($('#code').val()),name:$.trim($('#name').val()),uid:getQueryString('uid')},function (r) {
+        $.post('/ssoApi/ssoLogin',{
+            phone:$.trim($('#tel').val()),
+            code:$.trim($('#code').val()),
+            name:$.trim($('#name').val()),
+            uid:getQueryString('uid'),
+            super_uid:getQueryString('super_uid')
+        },function (r) {
             if(r.success=='ok'){
                 // location.href="/userApi/download";
                 var u = navigator.userAgent;

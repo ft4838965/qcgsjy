@@ -1,0 +1,353 @@
+
+*{margin: 0;padding: 0;}
+html{
+	font-family: 'PingFang SC', 'Helvetica Neue', Helvetica, STHeiti, 'Microsoft YaHei', Arial, Verdana, sans-serif !important;
+	font-size:16px;
+}
+li{
+	list-style: none;
+}
+/*我的收益*/
+.bodyMain{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background-color: #fff;
+}
+.bodyMain .topTextBox{
+	width: auto;
+	height: auto;
+	padding: 0 1rem;
+}
+.bodyMain .topTextBox .text1{
+	width: 100%;
+	height: 3.75rem;
+	line-height: 3.75rem;
+	margin-top: 8.125rem;
+	text-align: center;
+	font-size: 1.875rem;
+	font-weight: 700;
+}
+.bodyMain .topTextBox .text2{
+	width: 100%;
+	height: auto;
+	color: #d2443a;
+	font-size: 0.8rem;
+	text-align: center;
+	line-height: 1.25rem;
+}
+.bodyMain .btnBox{
+	padding: 0 1rem;
+	margin-top: 7.5rem;
+}
+.bodyMain .btnBox .TXbtn{
+	width: 100%;
+	height: 3.125rem;
+	border-radius: 5px;
+	border: 0;
+	outline: none;
+	background-color: #f9e105;
+	font-size: 1rem;
+	letter-spacing: 2px;
+	font-weight: 700;
+}
+.bodyMain .btnBox .ms{
+	font-size: 0.98rem;
+	line-height: 1.875rem;
+	text-align: center;
+	color: #777;
+	display: inline-block;
+	width: 100%;
+	margin-top: 1rem;
+}
+
+
+
+
+/*邀请好友列表*/
+.inviteMain{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	background-color: #fff;
+}
+.inviteMain .tabsTitleBox{
+	width: auto;
+	height: 3.125rem;
+	padding: 0 1rem;
+}
+.inviteMain .tabsTitleBox .tabs{
+	width: 50%;
+	height: 100%;
+	float: left;
+	text-align: center;
+}
+.inviteMain .tabsTitleBox .tabs>span{
+	display: inline-block;
+	font-size: 1rem;
+	color: #8a8a8a;
+	line-height: 3.125rem;
+	border-bottom: 3px solid #fff;
+	box-sizing: border-box;
+	height: 100%;
+}
+.inviteMain .tabsTitleBox .tabs.act>span{
+	color: #2a2a2a;
+	border-bottom: 3px solid #fae200;
+}
+
+
+
+.tabsContent{
+	width: 100%;
+	height: calc(100% - 3.125rem);
+}
+.tabsContent .cont1{
+	width: 100%;
+	height: 100%;
+	background: url(../img/topBg.png) no-repeat top center;
+	background-size: 100%;
+}
+.tabsContent .cont2{
+	width: 100%;
+	height: 100%;
+	background: url(../img/topBg.png) no-repeat top center;
+	background-size: 100%;
+	display: none;
+}
+.tabsContent .topBgBox{
+	width: auto;
+	height: 4.75rem;
+	position: relative;
+	padding: 0 1rem;
+}
+.tabsContent .topBgBox .topBoxText{
+	width: 100%;
+	height: 100%;
+}
+.tabsContent .topBgBox .topBoxText .leftText{
+	float: left;
+	width: 44%;
+	text-align: right;
+	line-height: 4.75rem;
+	font-size: 0.875rem;
+	letter-spacing: 0px;
+	font-weight: 600;
+}
+.tabsContent .topBgBox .topBoxText .rightText{
+	float: right;
+	width: 51%;
+	text-align: left;
+	line-height: 4.75rem;
+	font-size: 0.875rem;
+	letter-spacing: 0px;
+	font-weight: 600;
+}
+.tabsContent .topBgBox .topBoxText .redText{
+	color: #e51c0a;
+}
+.tabsContent .textsSM{
+	font-size: 0.875rem;
+	padding: 0 1rem;
+	color: #939393;
+	height: 1.5rem;
+}
+
+.tabsContent .listBox{
+	width: 100%;
+	/*height: calc(100% - 9.25rem);*/
+	height: auto;
+	overflow-y: auto;
+}
+.tabsContent .listBox .lists{
+	/*width: 100%;*/
+	height: 3.5rem;
+	padding: 0.3rem 1rem;
+	border-bottom: 1px solid #E8E8E8;
+}
+.tabsContent .listBox .lists .userLogoBox{
+	width: 3rem;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	float: left;
+}
+.tabsContent .listBox .lists .userLogoBox .userLogo{
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
+	overflow: hidden;
+}
+.tabsContent .listBox .lists .userLogoBox .userLogo>img{
+	width: 100%;
+	height: 100%;
+}
+.tabsContent .listBox .lists .rightInfoBox{
+	width: calc(100% - 3.5rem);
+	float: right;
+}
+.tabsContent .listBox .lists .rightInfoBox .text1{
+	font-size: 0.9375rem;
+	width: 100%;
+	height: 1.8rem;
+	line-height: 2.5rem;
+	color: #333;
+}
+.tabsContent .listBox .lists .rightInfoBox  .bottomText{
+	line-height: 1.5rem;
+	height: 1.7rem;
+	font-size: 0.9375rem;
+}
+.tabsContent .listBox .lists .rightInfoBox  .bottomText .leftText{
+	float: left;
+	height: 100%;
+	color: #333;
+}
+.tabsContent .listBox .lists .rightInfoBox  .bottomText .rightText{
+	float: right;
+	height: 100%;
+	color: #999;
+}
+
+
+
+
+
+.bottomBox{
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	padding: 0.5rem 1rem;
+	border-top: 1px solid #E8E8E8;
+	width: calc(100% - 2rem);
+	height: 2.5rem;
+	background-color: #fff;
+	box-shadow: -1px 0 18px 0px rgba(0,0,0,0.15);
+}
+.bottomBox .leftBtn{
+	width: 47%;
+	height: 100%;
+	float: left;
+	background-color: #fae200;
+	border: 0;
+	outline: none;
+	font-size: 1rem;
+	letter-spacing: 0px;
+	color: #333;
+}
+.bottomBox .rightBtn{
+	width: 47%;
+	height: 100%;
+	float: right;
+	background-color: #fae200;
+	border: 0;
+	outline: none;
+	font-size: 1rem;
+	letter-spacing: 0px;
+	color: #333;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.bgColor{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	background-color: rgba(0,0,0,0.5);
+	display: none;
+}
+.bgColor .BottomBox{
+	width: 100%;
+	height: auto;
+	padding: 5px 0;
+	background-color: #fff;
+	position: absolute;
+	bottom: 0;
+}
+.bgColor .BottomBox .box1{
+	width: 100%;
+	height: 80px;
+}
+.bgColor .BottomBox .box1 .leftIcon{
+	width: 50%;
+	height: 100%;
+	float: left;
+}
+.bgColor .BottomBox .box1 .rightIcon{
+	width: 50%;
+	height: 100%;
+	float: left;
+}
+.bgColor .BottomBox .box1 .iconBox{
+	width: 130px;
+	height: 60px;
+	margin-top: 6px;
+}
+.bgColor .BottomBox .box1 .iconBox .icons{
+	width: 40px;
+	height: 40px;
+	text-align: center;
+	display: flex;
+	align-items: center;
+	border-radius: 50%;
+	overflow: hidden;
+	margin: auto;
+}
+.bgColor .BottomBox .box1 .iconBox .icons>img{
+	width: 23px;
+	align-items: center;
+	margin: auto;
+}
+.bgColor .BottomBox .box1 .texts{
+	text-align: center;
+	font-size: 1rem;
+	line-height: 25px;
+	color: #333;
+}
+.bgColor .BottomBox .box1 .leftIcon .iconBox{
+	float: right;
+}
+
+.bgColor .BottomBox .box1 .leftIcon .icons{
+	background-color: #23c464;
+}
+.bgColor .BottomBox .box1 .rightIcon .icons{
+	background-color: #e76a4e;
+}
+.bgColor .BottomBox .box2{
+	width: 100%;
+	height: 40px;
+	border-top: 3px solid #f1f1f1;
+	text-align: center;
+	line-height: 40px;
+	font-size: 1.025rem;
+	color: #000;
+	font-weight: 700;
+	letter-spacing: 5px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

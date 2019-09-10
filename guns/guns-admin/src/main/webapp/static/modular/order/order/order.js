@@ -97,12 +97,25 @@ Order.delete = function () {
 Order.search = function () {
     var queryData = {};
     queryData['condition'] = $("#condition").val();
+    queryData['state'] = $("#state").val();
+    queryData['start_time'] = $("#start_time").val();
+    queryData['end_time'] = $("#end_time").val();
     Order.table.refresh({query: queryData});
 };
-
+//按照搜索条件导出表格
+Order.downloadFun = function () {
+    var parmes=[];
+    parmes.push("condition="+$("#condition").val())
+    parmes.push("state="+$("#state").val())
+    parmes.push("start_time="+$("#start_time").val())
+    parmes.push("end_time="+$("#end_time").val())
+    window.location.href="/export/orders"+(parmes.length>0?("?"+parmes.join('&')):"");
+}
 $(function () {
     var defaultColunms = Order.initColumn();
     var table = new BSTable(Order.id, "/order/list", defaultColunms);
-    table.setPaginationType("client");
+    table.setPaginationType("server");
+    table.setData({'state':'1'})
+    table.setQueryParams({'state':'1'})
     Order.table = table.init();
 });

@@ -14,9 +14,11 @@ var SuperSso = {
 SuperSso.initColumn = function () {
     return [
         {field: 'selectItem', radio: true},
-            {title: '编号', field: 'id', visible: true, align: 'center', valign: 'middle'},
             {title: '名称', field: 'name', visible: true, align: 'center', valign: 'middle'},
             {title: '手机号', field: 'phone', visible: true, align: 'center', valign: 'middle'},
+        {title: '审核状态', field: 'check', visible: true, align: 'center', valign: 'middle'},
+        {title: '账号余额', field: 'balance', visible: true, align: 'center', valign: 'middle'},
+        {title: '介绍人', field: 'pid', visible: true, align: 'center', valign: 'middle'},
             {title: '创建时间', field: 'createTime', visible: true, align: 'center', valign: 'middle'}
     ];
 };

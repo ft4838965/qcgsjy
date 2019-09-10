@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="renderer" content="webkit">
+		<title>邀请好友列表</title>
+		<link rel="stylesheet" href="../../../static/h5static/static/css/mescroll.min.css">
+		<link rel="stylesheet" href="../../../static/h5static/static/css/style.css" />
+		<script type="text/javascript" src="../../../static/h5static/static/js/jquery-3.3.1.min.js" ></script>
+		<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+		<style type="text/css">
+			/*列表*/
+			.mescroll{
+				position: fixed;
+				top: 9.5rem;
+				bottom: 3.5rem;
+				height: auto;
+			}
+			/*隐藏*/
+			/*.hide{display: none;}*/
+		</style>
+		<script>
+			wx.config({
+				debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+				appId: '${wx_config.appid}', // 必填，公众号的唯一标识
+				timestamp:${wx_config.timestamp!} , // 必填，生成签名的时间戳
+				nonceStr: '${wx_config.noncestr!}', // 必填，生成签名的随机串
+				signature: '${wx_config.signature!}',// 必填，签名
+				jsApiList: ['updateTimelineShareData',
+					'onMenuShareTimeline',
+					'onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+			});
+			wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+				// wx.updateAppMessageShareData({微信你的新接口不给权限到订阅号,我用个屁啊,报错啊!updateAppMessageShareData:permission denied
+				wx.onMenuShareTimeline({//即将废弃,先用着
+					title: '《黔城故事》', // 分享标题
+					desc: '还在为没有与结交美女的机会而烦恼吗？加入我们吧，通过我们平台让你与美女成为朋友变成一件很寻常的事儿！', // 分享描述
+					link: '${wx_config.url!}', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+					imgUrl: 'http://app.qcy2019.com/static/h5static/static/img/min_logo.jpg', // 分享图标
+					success: function () {
+						// 用户点击了分享后执行的回调函数
+					}
+				});
+				wx.onMenuShareAppMessage({//即将废弃,先用着
+					title: '《黔城故事》', // 分享标题
+					desc: '还在为没有与结交美女的机会而烦恼吗？加入我们吧，通过我们平台让你与美女成为朋友变成一件很寻常的事儿！', // 分享描述
+					link: '${wx_config.url!}', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+					imgUrl: 'http://app.qcy2019.com/static/h5static/static/img/min_logo.jpg', // 分享图标
+					type: 'link', // 分享类型,music、video或link，不填默认为link
+					dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+					success: function () {
+						// 用户点击了分享后执行的回调函数
+					}
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div class="inviteMain">
+			<ul class="tabsTitleBox">
+				<li class="tabs act" i="0">
+					<span>邀请注册<span id="invited_num">${invited_num!}</span>人</span>
+				</li>
+				<li class="tabs" i="1">
+					<span>开通VIP<span id="vip_num">${vip_num!}</span>人</span>
+				</li>
+			</ul>
+			<div class="tabsContent">
+				
+				<div class="cont cont1">
+					<div class="topBgBox">
+						<div class="topBoxText">
+							<div class="leftText">您已获得 <span class="redText"><span id="amount">${amount!}</span>元</span></div>
+							<div class="rightText">剩余提现金额 <span class="redText"><span id="balance">${balance!}</span>元</span></div>
+						</div>
+					</div>
+					<div class="textsSM">邀请好友开通VIP每人得168元</div>
+					<div id="mescroll0" class="mescroll">
+						<ul id="dataList0" class="listBox">
+						</ul>
+					</div>
+				</div>
+				<div class="cont cont2">
+					<div class="topBgBox">
+						<div class="topBoxText">
+							<div class="leftText">您已获得 <span class="redText">${amount!}元</span></div>
+							<div class="rightText">剩余提现金额 <span class="redText">${balance!}元</span></div>
+						</div>
+					</div>
+					<div class="textsSM">邀请好友开通VIP每人得168元</div>
+					<div id="mescroll1" class="mescroll">
+						<ul id="dataList1" class="listBox">
+						</ul>
+					</div>
+					
+				</div>
+				
+				<div class="bottomBox">
+					<button class="leftBtn" onclick="goShare()">立即邀请</button>
+					<button class="rightBtn" onclick="tixian()">提现</button>
+				</div>
+				
+			</div>
+			
+			<div class="bgColor" id="shareBox" onclick="closeShare()">
+				<img width="100%" src="../../../static/h5static/static/img/wecat-fenxiang.png" />
+<!--				<div class="BottomBox">-->
+<!--					<div class="box1">-->
+<!--						<div class="leftIcon">-->
+<!--							<div class="iconBox">-->
+<!--								<div class="icons">-->
+<!--									<img src="../../../static/h5static/static/img/weixin_icon.png" />-->
+<!--								</div>-->
+<!--								<div class="texts">微信好友</div>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--						<div class="rightIcon">-->
+<!--							<div class="iconBox">-->
+<!--								<div class="icons">-->
+<!--									<img src="../../../static/h5static/static/img/pengyouquan_icon.png" />-->
+<!--								</div>-->
+<!--								<div class="texts">朋友圈</div>-->
+<!--							</div>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--					<div class="box2" onclick="closeShare()">取消</div>-->
+<!--				</div>-->
+			</div>
+			
+		</div>
+	</body>
+	<script src="../../../static/h5static/static/js/mescroll.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		$(function(){
+			//tabs切换
+			$(".inviteMain .tabsTitleBox .tabs").click(function(){
+				var i=$(this).index();
+				$(this).addClass("act").siblings().removeClass("act");
+				$(".tabsContent .cont"+(i+1)).show().siblings('.cont').hide();
+			});
+			$("#shareBox .BottomBox").click(function(){
+				event.stopPropagation();    //  阻止事件冒泡
+			});
+			
+			
+			
+		})
+		
+		
+		//点击立即分享
+		function goShare(){
+			$("#shareBox").show();
+			$("#shareBox").find(".BottomBox").slideDown();
+		}
+		//关闭立即分享
+		function closeShare(){
+			$("#shareBox").find(".BottomBox").slideUp();
+			$("#shareBox").hide();
+		}
+		//提现
+		function tixian(){
+			location.href='my_shouyi.html?id=${id}'
+		}
+		
+		
+	</script>
+	
+	
+	<!--mescroll本身不依赖jq,这里为了模拟发送ajax请求-->
+	<script type="text/javascript" charset="utf-8">
+		$(function(){
+			var curNavIndex=0;//首页0; 奶粉1; 面膜2; 图书3;
+			var mescrollArr=new Array(4);//4个菜单所对应的4个mescroll对象
+			//初始化首页
+			mescrollArr[0]=initMescroll("mescroll0", "dataList0");
+			
+			/*初始化菜单*/
+			$(".inviteMain .tabsTitleBox .tabs").click(function(){
+				var i=Number($(this).attr("i"));
+				if(curNavIndex!=i) {
+					//更改列表条件
+					$("#mescroll"+curNavIndex).hide();
+					mescrollArr[curNavIndex].hideTopBtn();
+					//显示对应的列表
+					$("#mescroll"+i).show();
+					//取出菜单所对应的mescroll对象,如果未初始化则初始化
+					if(mescrollArr[i]==null){
+						mescrollArr[i]=initMescroll("mescroll"+i, "dataList"+i);
+					}else{
+						//检查是否需要显示回到到顶按钮
+						var curMescroll=mescrollArr[i];
+						var curScrollTop=curMescroll.getScrollTop();
+						if(curScrollTop>=curMescroll.optUp.toTop.offset){
+							curMescroll.showTopBtn();
+						}else{
+							curMescroll.hideTopBtn();
+						}
+					}
+					//更新标记
+					curNavIndex=i;
+				}
+			})
+			
+			/*创建MeScroll对象*/
+			function initMescroll(mescrollId,clearEmptyId){
+				//创建MeScroll对象,内部已默认开启下拉刷新,自动执行up.callback,刷新列表数据;
+				var mescroll = new MeScroll(mescrollId, {
+					//上拉加载的配置项
+					up: {
+						callback: getListData, //上拉回调,此处可简写; 相当于 callback: function (page) { getListData(page); }
+						isBounce: false, //此处禁止ios回弹,解析(务必认真阅读,特别是最后一点): http://www.mescroll.com/qa.html#q10
+						noMoreSize: 4, //如果列表已无数据,可设置列表的总数量要大于半页才显示无更多数据;避免列表数据过少(比如只有一条数据),显示无更多数据会不好看; 默认5
+						empty: {
+							tip: "暂无相关数据~", //提示
+						},
+						clearEmptyId: clearEmptyId, //相当于同时设置了clearId和empty.warpId; 简化写法;默认null; 注意vue中不能配置此项
+//						toTop:{ //配置回到顶部按钮
+//							src : "../res/img/mescroll-totop.png", //默认滚动到1000px显示,可配置offset修改
+//							//offset : 1000
+//						},
+						lazyLoad: {
+				        	use: true // 是否开启懒加载,默认false
+				        }
+					}
+				});
+				return mescroll;
+			}
+			
+			/*联网加载列表数据  page = {num:1, size:10}; num:当前页 从1开始, size:每页数据条数 */
+			function getListData(page){
+				//联网加载数据
+				var dataIndex=curNavIndex; //记录当前联网的nav下标,防止快速切换时,联网回来curNavIndex已经改变的情况;
+				getListDataFromNet(dataIndex, page.num, page.size, function(pageData){
+					mescrollArr[dataIndex].endSuccess(pageData.length);
+					//设置列表数据
+					setListData(pageData,dataIndex);
+				}, function(){
+					//联网失败的回调,隐藏下拉刷新和上拉加载的状态;
+	                mescrollArr[dataIndex].endErr();
+				});
+			}
+			
+			/*设置列表数据
+			 * pageData 当前页的数据
+			 * dataIndex 数据属于哪个nav */
+			function setListData(pageData,dataIndex){
+				var listDom=document.getElementById("dataList"+dataIndex);
+				for (var i = 0; i < pageData.length; i++) {
+					var pd=pageData[i];
+					
+					var str='<div class="userLogoBox">'+
+									'<div class="userLogo">'+
+										'<img src="'+pd.avatar+'" />'+
+									'</div>'+
+								'</div>'+
+								'<div class="rightInfoBox">'+
+									'<div class="text1">'+pd.nick_name+'</div>'+
+									'<div class="bottomText">'+
+										'<div class="leftText">'+pd.phone+'</div>'+
+										'<div class="rightText">'+pd.time+'</div>'+
+									'</div>'+
+								'</div>';
+					
+					var liDom=document.createElement("li");
+					liDom.className = 'lists';　
+					liDom.innerHTML=str;
+					listDom.appendChild(liDom);
+				}
+			}
+			
+			/*联网加载列表数据
+			 在您的实际项目中,请参考官方写法: http://www.mescroll.com/api.html#tagUpCallback
+			 请忽略getListDataFromNet的逻辑,这里仅仅是在本地模拟分页数据,本地演示用
+			 实际项目以您服务器接口返回的数据为准,无需本地处理分页.
+			 * */
+			function getListDataFromNet(curNavIndex,pageNum,pageSize,successCallback,errorCallback) {
+				//延时一秒,模拟联网
+                setTimeout(function () {
+                	$.ajax({
+		                type: 'POST',
+		                url: 'invitedByPage',
+						data:{super_sso_id:'${id!}',tabIndex:curNavIndex,pageNo:pageNum,pageSize:pageSize},
+		                dataType: 'json',
+		                success: function(r){
+							if(!!r.data.amount)$('#amount').html(r.data.amount);
+							if(!!r.data.balance)$('#balance').html(r.data.balance);
+							if(!!r.data.invited_num)$('#invited_num').html(r.data.invited_num);
+							if(!!r.data.vip_num)$('#vip_num').html(r.data.vip_num);
+		                	//回调
+		                	successCallback(r.data.data);
+		                },
+		                error: errorCallback
+		            });
+                },500)
+			}
+			
+		});
+	</script>
+	
+	
+</html>

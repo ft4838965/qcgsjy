@@ -18,6 +18,10 @@ public class FSS {
 	public static final String FILEPATHFILE_OFFLINE = "D:/qcgs/";			//文件上传路径
 	public static final String FILEPATHFILE_ONLINE = "/arron/qcgu/";			//文件上传路径
 
+
+	public static final String FILE_UPLOAD_PATH_LOC="D:/项目测试路径/qcgs/";
+	public static final String FILE_UPLOAD_PATH_ONLINE="/root/qcgs/";
+
 	public static final String MD5_yan="b64dd805-00bf-6b74-ed51-920828ef8f53";
 	public static final String MD5_yan_IOS="b64dd805-00bf-6b74-ed51-9208";
 }

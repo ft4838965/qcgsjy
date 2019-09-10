@@ -1,0 +1,312 @@
+
+<!doctype html>
+<html lang="zh_cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>黔城故事</title>
+    <meta name="keywords" content="黔城故事">
+    <meta name="description" content="黔城故事">
+    <link rel="stylesheet" href="../../../static/h5static/static/css/swiper-4.1.6.min.css">
+    <link rel="stylesheet" href="../../../static/h5static/static/css/reset.css">
+    <link rel="stylesheet" href="../../../static/h5static/static/css/common.css">
+    <script src="../../../static/h5static/static/js/jquery1.9.1.js"></script>
+    <script src="../../../static/h5static/static/js/common.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+    <style>
+        .modal{
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            /* background: rgba(0,0,0,0.3); */
+            display: none;
+        }
+        .modal .bg{
+            background: rgba(0,0,0,0.5);
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            z-index: 1;
+        }
+        .modal .box{
+            z-index: 2;
+            color: #000;
+            font-size: 0.32rem;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateY(-50%) translateX(-50%);
+            width: 300px;
+            margin: 0 auto;
+            text-align: right;
+        }
+        .modal .box .close{
+            z-index: 2;
+            width: 1rem;
+            height: 1rem;
+            display: inline-block;
+            margin-bottom: 0.8rem;
+            margin-right: 0.5rem;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-image: url(../../../static/h5static/static/img/icon-clear-w.png);
+            background-size: 1rem;
+        }
+        .modal .box p{
+            margin: 0.2rem 0
+        }
+        .modal .box .tipsContent{
+            background: #fff;
+            padding: 1rem 0.2rem 1.2rem;
+            font-size: 16px;
+            border-radius: 0.4rem;
+            text-align: center;
+        }
+        .modal .box .tipsContent a{
+            display: inline-block;
+            width: 80%;
+            background: #fed02f;
+            text-align: center;
+            height: 2.8125rem;
+            line-height: 2.8125rem;
+            color: #000;
+            border-radius: 1.40625rem;
+            margin-top: 1rem;
+        }
+        .label{
+            display: flex;
+            align-items: center;
+            line-height: 1rem;
+            padding: 0.6rem 0;
+            justify-content: flex-start;
+            border-bottom: 0.0625rem solid #f2f2f2;
+            position: relative;
+        }
+
+    </style>
+</head>
+<body>
+<script>
+    wx.config({
+        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+        appId: '${wx_config.appid}', // 必填，公众号的唯一标识
+        timestamp:${wx_config.timestamp} , // 必填，生成签名的时间戳
+        nonceStr: '${wx_config.noncestr}', // 必填，生成签名的随机串
+        signature: '${wx_config.signature}',// 必填，签名
+        jsApiList: ['updateTimelineShareData',
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage'] // 必填，需要使用的JS接口列表
+    });
+    wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+        // wx.updateAppMessageShareData({微信你的新接口不给权限到订阅号,我用个屁啊,报错啊!updateAppMessageShareData:permission denied
+        wx.onMenuShareTimeline({//即将废弃,先用着
+            title: '《黔城故事--合伙人》', // 分享标题
+            desc: '加入合伙人', // 分享描述
+            link: '${wx_config.url}', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl: 'http://app.qcy2019.com/static/h5static/static/img/min_logo.jpg', // 分享图标
+            success: function () {
+                // 用户点击了分享后执行的回调函数
+            }
+        });
+        wx.onMenuShareAppMessage({//即将废弃,先用着
+            title: '《黔城故事--合伙人》', // 分享标题
+            desc: '加入合伙人', // 分享描述
+            link: '${wx_config.url}', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl: 'http://app.qcy2019.com/static/h5static/static/img/min_logo.jpg', // 分享图标
+            type: 'link', // 分享类型,music、video或link，不填默认为link
+            dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+            success: function () {
+                // 用户点击了分享后执行的回调函数
+            }
+        });
+    });
+    wx.error(function(res){
+        // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+        console.log(res)
+    });
+</script>
+    <div class="loginBox">
+        @/* <div class="topBar">
+            <span class="icon leftArrow black"></span>
+            黔城故事
+            <span class="icon icon-more black"></span>
+        </div> @*/
+        <div class="wrapper">
+<!--            <label for="name">-->
+<!--                <input type="text" id="name" placeholder="请输入姓名">-->
+<!--            </label>-->
+            <label for="tel">
+                <div class="linkBox">
+                    <p class="idx-foot-select">
+                        <span class="txt">+86</span>
+                        <i class="trans-3"></i>
+                    </p>
+                    <ul class="idx-foot-items" style="display: none;">
+                        <li>
+                            <a class="trans-3" href="javascript:;" target="_blank">+886</a>
+                        </li>
+                        <li>
+                            <a class="trans-3" href="javascript:;" target="_blank">+852</a>
+                        </li>
+                    </ul>
+                </div>
+                <input type="text" id="tel" placeholder="请输入手机号">
+                <span class="icon icon-clear clear"></span>
+            </label>
+            <div class="label" for="code">
+                <input type="num" id="code" placeholder="请输入验证码">
+                <span class="getCode">获取验证码</span>
+            </div>
+            <div class="bottom">
+                <a href="javascript:;" onclick="userLogin();" class="submit">加入黔城合伙人</a>
+                <p id="tips" class="tips">没收到验证码？倒计时结束后可重新获取</p>
+<!--                <p onclick="-->
+<!--                var u = navigator.userAgent;-->
+<!--                if (u.indexOf('Android') > -1 || u.indexOf('Linux') > -1) {//安卓手机-->
+<!--                    window.location.href='https://19072499529.fx.sj.360.cn/qcms/view/t/detail?id=4042579&to=qq';-->
+<!--                } else if (u.indexOf('iPhone') > -1) {//苹果手机-->
+<!--                window.location.href='https://itunes.apple.com/cn/app/id1472304269?mt=8';-->
+<!--                }-->
+<!--" class="tips" style="margin-top: 70px;text-decoration: underline;">已注册APP用户入口</p>-->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal">
+        <div class="bg"></div>
+        <div class="box">
+            <div class="close"></div>
+            <div class="tipsContent">
+                <p>该手机已注册 您已是黔城故事用户</p>
+                <a href="javascript:;">好的</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+
+    $('.modal .close, .modal .bg, .modal a').bind('click',function(){
+        $(this).parents('.modal').hide()
+    })
+
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]); return null;
+    }
+    function userLogin() {
+        $.post('/super_ssoApi/super_ssoLogin',{phone:$.trim($('#tel').val()),code:$.trim($('#code').val()),/*name:$.trim($('#name').val()),*/pid:getQueryString('pid')},function (r) {
+            if(r.success=='ok'){
+                localStorage.setItem('super_phone',$.trim($('#tel').val()));
+                if(r.data.check=="1")location.replace("invite.html?id="+r.data.id);
+                else $('#tips').css('color','red').html("您的账号正在审核中")
+            }else{
+                $('#tips').css('color','red').html(r.message)
+            }
+        })
+    }
+
+    var haveGotCode = false
+    $('#tel').bind('input',debounce(function (e) {
+        var val = $(this).val(),
+        length = $(this).size()
+        if(length > 0){
+            $('.clear').addClass('active')
+        }
+        if(isPoneAvailable(val)){
+            if(!haveGotCode){
+                $('.getCode').addClass('canGet')
+            }
+        }else{
+            $('.getCode').removeClass('canGet')
+        }
+    },200))
+    $('.clear').bind('click',function () {
+        $('#tel').val('')
+        $(this).removeClass('active')
+    })
+    $('#code').bind('input',debounce(function (e) {
+        var val = $(this).val(),
+        nameLength = $('#name').val()
+        if(nameLength >= 2 && val.length >= 4 && $('#tel').hasClass('isRight') && haveGotCode){
+            $('.submit').addClass('active')
+        }
+    },200))
+    $('.getCode').bind('click',function () {
+        if(haveGotCode){
+            alert('已发送，稍后重新获取');
+            return false;
+        }
+        if($(this).hasClass('canGet')){
+            haveGotCode = true
+            var time = 61
+            var timer = setInterval(function () {
+                if(time == 1){
+                    clearInterval(timer)
+                    haveGotCode = false
+                    var tel = $('#tel').val()
+                    if(isPoneAvailable(tel)){
+                        $('.getCode').addClass('canGet')
+                    }
+                    $('.getCode').html('重新获取')
+                    $('#tips').css('color','#777').html('没收到验证码？倒计时结束后可重新获取')
+                }else{
+                    time--
+                    var str = time + 's'
+                    $('.getCode').html(str)
+                }
+            },1000)
+            //请求验证码接口
+            $.post('/ssoApi/getVerificationCode',{phone:$.trim($('#tel').val()),super_sso:"super_sso"},function (r) {
+                if(r.success=='ok'){
+                    $('#tips').css('color','#777').html(r.message)
+                }else{
+                    $('#tips').css('color','red').html(r.message)
+                    if(r.data){
+                        $('.modal').find('p').replaceWith('<p>'+r.message+'</p>')
+                        $('.modal').show();
+                    }
+                }
+            });
+            $('.getCode').removeClass('canGet')
+        }else{
+            alert('请输入正确的手机号');
+        }
+    })
+    function isPoneAvailable(str) {
+        var myreg=/^[1][3,4,5,7,8][0-9]{9}$/;
+        if (!myreg.test(str)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    if(!!localStorage.getItem("super_phone")){
+        $('#tel').val(localStorage.getItem("super_phone"));
+        var val = $('#tel').val(),
+            length = $('#tel').size()
+        if(length > 0){
+            $('.clear').addClass('active')
+        }
+        if(isPoneAvailable(val)){
+            if(!haveGotCode){
+                $('.getCode').addClass('canGet')
+            }
+        }else{
+            $('.getCode').removeClass('canGet')
+        }
+        $.post('/super_ssoApi/super_ssoLogin_again',{phone:localStorage.getItem("super_phone")},function (r) {
+            if(r.success=='ok'){
+                location.replace("invite.html?id="+r.data);
+            }else{
+                // localStorage.removeItem("super_phone");
+            }
+        })
+    }
+</script>

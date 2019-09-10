@@ -510,14 +510,17 @@ public class Tool {
 			parame.add((paraName+"="+request.getParameter(paraName)));
 		}
 		result.put("parameMap",parameMap);
-		result.put("parameString",("?"+StringUtils.join(parame,"&")));
+		String urlParame=StringUtils.join(parame,"&");
+		result.put("parameString",Tool.isNull(urlParame)?"":("?"+urlParame));
 		return result;
 	}
 
 	public static void putWX_config(Model model, ISettingService settingService) {
 		Setting setting=settingService.selectById(1);
-		Map<String,Object> wx_config=getHaveSignatureMap(setting.getWechatTicket(),(((HttpServletRequest)getRequest_Response_Session()[0]).getRequestURL()+getUrlRequestParame().get("parameString").toString()));
+		Map<String,Object> wx_config=getHaveSignatureMap(setting.getWechatTicket(),("http://"+((HttpServletRequest)getRequest_Response_Session()[0]).getServerName()+((HttpServletRequest)getRequest_Response_Session()[0]).getRequestURI()+getUrlRequestParame().get("parameString").toString()));
 		wx_config.put("appid",setting.getWechatAppId());
+		System.err.println("wx_config:********************************************************************************");
+		System.err.println(wx_config);
 		model.addAttribute("wx_config",wx_config);
 	}
 

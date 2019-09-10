@@ -125,49 +125,51 @@ public class InvitedController extends BaseController {
                     "\tLEFT JOIN t_vip b ON b.sso_id = c.sso_id \n" +
                     "WHERE\n" +
                     "\t c.sso_id = " + beSsoId);
-            m.put("sex",maps1.get(0).get("sex"));
-            m.put("beSsoSpend",maps1.get(0).get("beSsoSpend"));
+            m.put("sex",!Tool.listIsNull(maps1)?maps1.get(0).get("sex"):"未知");
+            m.put("beSsoSpend",!Tool.listIsNull(maps1)?maps1.get(0).get("beSsoSpend"):"未知");
         }
         return maps;
     }
 
     /**
      *  返现
+     *  千万小心这个接口!!!千万小心这个接口!!!千万小心这个接口!!!
+     *  会增加用户可提现的余额--李俊
      */
-    @RequestMapping(value = "/giveMoney")
-    @ResponseBody
-    @Transactional(rollbackFor = Exception.class)
-    public Object cleanMoney(@RequestParam Integer id) {
-        Invited invited = invitedService.selectById(id);
-        if (invited.getStatus().equals("0")){
-            Setting setting = settingService.selectById(1);
-            //返现
-            dao.updateBySQL("UPDATE t_sso_account a LEFT JOIN t_invited b ON a.sso_id = b.sso_id SET a.useable_balance = a.useable_balance +" + setting.getMoneyGiveWomen()+ " WHERE b.id ="+id);
-            //创建账户流水
-            SsoAccountFlow ssoAccountFlow = new SsoAccountFlow();
-            ssoAccountFlow.setMoney(50.0);
-            ssoAccountFlow.setNote("邀请返现");
-            ssoAccountFlow.setBusinessType("0");
-            ssoAccountFlow.setBusinessName("返现");
-            ssoAccountFlow.setComeFrom(invited.getBeSsoId());
-            ssoAccountFlow.setSsoId(Integer.parseInt(invited.getSsoId()));
-            ssoAccountFlow.setCreateTime(new DateTime());
-            accountFlowService.insert(ssoAccountFlow);
-            //创建消息
-            Message message = new Message();
-            message.setContent("您邀请ID为"+invited.getBeSsoId()+"的用户成功！返现50￥，请查收！");
-            message.setCreateTime(new DateTime());
-            message.setLook("0");
-            message.setSsoId(0);
-            message.setMessageSsoId(invited.getSsoId());
-            message.setType("2");
-            message.setOfficialMessageType("4");
-            messageService.insert(message);
-            invited.setStatus("1");
-            invitedService.updateById(invited);
-        }
-        return SUCCESS_TIP;
-    }
+//    @RequestMapping(value = "/giveMoney")
+//    @ResponseBody
+//    @Transactional(rollbackFor = Exception.class)
+//    public Object cleanMoney(@RequestParam Integer id) {
+//        Invited invited = invitedService.selectById(id);
+//        if (invited.getStatus().equals("0")){
+//            Setting setting = settingService.selectById(1);
+//            //返现
+//            dao.updateBySQL("UPDATE t_sso_account a LEFT JOIN t_invited b ON a.sso_id = b.sso_id SET a.useable_balance = a.useable_balance +" + setting.getMoneyGiveWomen()+ " WHERE b.id ="+id);
+//            //创建账户流水
+//            SsoAccountFlow ssoAccountFlow = new SsoAccountFlow();
+//            ssoAccountFlow.setMoney(50.0);
+//            ssoAccountFlow.setNote("邀请返现");
+//            ssoAccountFlow.setBusinessType("0");
+//            ssoAccountFlow.setBusinessName("返现");
+//            ssoAccountFlow.setComeFrom(invited.getBeSsoId());
+//            ssoAccountFlow.setSsoId(Integer.parseInt(invited.getSsoId()));
+//            ssoAccountFlow.setCreateTime(new DateTime());
+//            accountFlowService.insert(ssoAccountFlow);
+//            //创建消息
+//            Message message = new Message();
+//            message.setContent("您邀请ID为"+invited.getBeSsoId()+"的用户成功！返现50￥，请查收！");
+//            message.setCreateTime(new DateTime());
+//            message.setLook("0");
+//            message.setSsoId(0);
+//            message.setMessageSsoId(invited.getSsoId());
+//            message.setType("2");
+//            message.setOfficialMessageType("4");
+//            messageService.insert(message);
+//            invited.setStatus("1");
+//            invitedService.updateById(invited);
+//        }
+//        return SUCCESS_TIP;
+//    }
 
     /**
      * 新增邀请返现

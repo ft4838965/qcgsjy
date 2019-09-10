@@ -1,0 +1,31 @@
+@layout("/common/_container.html"){
+<div class="ibox float-e-margins">
+    <div class="ibox-content">
+        <div class="form-horizontal">
+
+            <div class="row">
+                <div class="col-sm-6 b-r">
+                            <#input id="id" name="" value="${item.id}" underline="true"/>
+                            <#input id="ssoId" name="用户的sso_id" value="${item.ssoId}" underline="true"/>
+                            <#input id="useableBalance" name="提现金额" value="${item.useableBalance}" />
+                </div>
+
+                <div class="col-sm-6">
+                            <#input id="state" name="0,未下账,1,已下账" value="${item.state}" underline="true"/>
+                            <#input id="createTime" name="" value="${item.createTime}" underline="true"/>
+                            <#input id="payTime" name="下账时间" value="${item.payTime}" />
+                </div>
+            </div>
+
+            <div class="row btn-group-m-t">
+                <div class="col-sm-10">
+                    <#button btnCss="info" name="提交" id="ensure" icon="fa-check" clickFun="UseableBalanceInfoDlg.editSubmit()"/>
+                    <#button btnCss="danger" name="取消" id="cancel" icon="fa-eraser" clickFun="UseableBalanceInfoDlg.close()"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/useable_balance/useableBalance/useableBalance_info.js"></script>
+@}

@@ -161,9 +161,11 @@ ShiroConfig {
          *
          */
         Map<String, String> hashMap = new LinkedHashMap<>();
+        hashMap.put("/MP_verify_MLvDTY0UZCw4LduU.txt", "anon");
         hashMap.put("/static/**", "anon");
         hashMap.put("/gunsApi/**", "anon");
         hashMap.put("/ssoApi/**", "anon");
+        hashMap.put("/super_ssoApi/**", "anon");
         hashMap.put("/authLogin/**", "anon");
         hashMap.put("/login", "anon");
         hashMap.put("/weChat/**", "anon");

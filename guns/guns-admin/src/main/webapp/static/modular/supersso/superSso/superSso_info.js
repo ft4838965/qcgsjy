@@ -45,7 +45,9 @@ SuperSsoInfoDlg.close = function() {
  */
 SuperSsoInfoDlg.collectData = function() {
     this
-    .set('name')
+        .set('id')
+        .set('name')
+    .set('check',$('#check').is(':checked')?'1':'0')
     .set('phone');
 }
 
@@ -59,13 +61,18 @@ SuperSsoInfoDlg.addSubmit = function() {
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/superSso/add", function(data){
-        Feng.success("添加成功!");
-        window.parent.SuperSso.table.refresh();
-        SuperSsoInfoDlg.close();
+        if (data.code==200) {
+            Feng.success("添加成功!");
+            window.parent.SuperSso.table.refresh();
+            SuperSsoInfoDlg.close();
+        } else {
+            Feng.error(data.message);
+        }
     },function(data){
         Feng.error("添加失败!" + data.responseJSON.message + "!");
     });
     ajax.set(this.superSsoInfoData);
+    // console.log(this.superSsoInfoData)
     ajax.start();
 }
 
@@ -79,9 +86,13 @@ SuperSsoInfoDlg.editSubmit = function() {
 
     //提交信息
     var ajax = new $ax(Feng.ctxPath + "/superSso/update", function(data){
-        Feng.success("修改成功!");
-        window.parent.SuperSso.table.refresh();
-        SuperSsoInfoDlg.close();
+        if (data.code==200) {
+            Feng.success("添加成功!");
+            window.parent.SuperSso.table.refresh();
+            SuperSsoInfoDlg.close();
+        } else {
+            Feng.error(data.message);
+        }
     },function(data){
         Feng.error("修改失败!" + data.responseJSON.message + "!");
     });
@@ -90,5 +101,10 @@ SuperSsoInfoDlg.editSubmit = function() {
 }
 
 $(function() {
-
+    $('#check').lc_switch("已审","待审")
+    // $('body').delegate('.lcs_check', 'lcs-statuschange', function() {
+    //     console.log($('#check').is(':checked'))
+    //     // var status = ($(this).is(':checked')) ? 'checked' : 'unchecked';
+    //     // console.log('field changed status: '+ status );
+    // });
 });

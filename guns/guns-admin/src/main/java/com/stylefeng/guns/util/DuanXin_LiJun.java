@@ -94,6 +94,25 @@ public class DuanXin_LiJun {
         sendParams.put("mobile", phone);
         return post(URI_TPL_SEND_SMS, sendParams);
     }
+    /**
+     * 发送通知类短信
+     * @param phones 手机号码,多个逗号分隔
+     * @param params 可变长参数
+     * @return
+     * @throws IOException
+     */
+    public String sendAllSmses(String phones, Object... params) throws IOException {
+        List<String>paramList=new ArrayList<>();
+        for (int i = 0; i < params.length; i++) {
+            if(params[i]!=null)paramList.add((URLEncoder.encode((("#number"+(i==0?"":i)+"#")), ENCODING)+"="+URLEncoder.encode(params[i].toString(), ENCODING)));
+        }
+        Map < String, String > sendParams = new HashMap < String, String > ();
+        sendParams.put("apikey", APIKEY);
+        sendParams.put("tpl_id",TPL_ID_XXTC);
+        sendParams.put("tpl_value", StringUtils.join(paramList,"&"));
+        sendParams.put("mobile", phones);
+        return post(URI_TPL_SEND_SMSS, sendParams);
+    }
 
     /**
      * 基于HttpClient 4.3的通用POST方法

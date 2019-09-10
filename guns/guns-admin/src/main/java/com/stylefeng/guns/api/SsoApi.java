@@ -2,6 +2,7 @@ package com.stylefeng.guns.api;
 
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.stylefeng.guns.modular.useable_balance.service.IUseableBalanceService;
 import com.stylefeng.guns.util.quartz.JobTypeConsts;
 import com.stylefeng.guns.util.quartz.QuartzJobInfo;
 import com.stylefeng.guns.util.quartz.QuartzService;
@@ -59,6 +60,7 @@ import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -160,18 +162,20 @@ public class SsoApi {
 
     //全局鉴权
     private Sso identify2(String token){
-        Sso constant = CacheKit.get("CONSTANT", token);
+//        Sso constant = CacheKit.get("CONSTANT", token);
+        Sso constant = null;
         if (constant == null){
             //鉴权
             EntityWrapper<Sso> wrapper = new EntityWrapper<>();
             wrapper.eq("token", token);
             Sso sso = ssoService.selectOne(wrapper);
-            if (sso == null){
-                return null;
-            }else {
-                CacheKit.put("CONSTANT",token,sso);
-                return  sso;
-            }
+            return sso;
+//            if (sso == null){
+//                return null;
+//            }else {
+//                CacheKit.put("CONSTANT",token,sso);
+//                return  sso;
+//            }
         }else {
             return constant;
         }
@@ -1067,7 +1071,7 @@ public class SsoApi {
 
                                                 giveStart(order);
                                                 giveMoney(order);
-
+                                                giveMoneyBySuper(order);
                                                 //设置定时会员短信提醒
                                                 setQuartzJob(vip.getValidDate(),order.getSsoId()+"");
                                             }else {
@@ -1100,6 +1104,7 @@ public class SsoApi {
 
                                                     giveStart(order);
                                                     giveMoney(order);
+                                                    giveMoneyBySuper(order);
 
                                                     // 删除之前的定期提醒，设置新的定时VIP到期提醒
                                                     QuartzJobInfo preHandleInfo = new QuartzJobInfo();
@@ -1157,6 +1162,7 @@ public class SsoApi {
 
                                                     giveStart(order);
                                                     giveMoney(order);
+                                                    giveMoneyBySuper(order);
 
                                                     //设置定时会员短信提醒
                                                     setQuartzJob(old_vip.getValidDate(),order.getSsoId()+"");
@@ -1328,6 +1334,7 @@ public class SsoApi {
 
                                             giveStart(order);
                                             giveMoney(order);
+                                            giveMoneyBySuper(order);
                                             //设置定时会员短信提醒
                                             setQuartzJob(vip.getValidDate(),order.getSsoId()+"");
                                         }else {
@@ -1365,6 +1372,7 @@ public class SsoApi {
 
                                                 giveStart(order);
                                                 giveMoney(order);
+                                                giveMoneyBySuper(order);
 
                                                 // 删除之前的定期提醒，设置新的定时VIP到期提醒
                                                 QuartzJobInfo preHandleInfo = new QuartzJobInfo();
@@ -1427,6 +1435,7 @@ public class SsoApi {
 
                                                 giveStart(order);
                                                 giveMoney(order);
+                                                giveMoneyBySuper(order);
 
                                                 //设置定时会员短信提醒
                                                 setQuartzJob(old_vip.getValidDate(),order.getSsoId()+"");
@@ -1634,10 +1643,11 @@ public class SsoApi {
             //返现
             Setting setting = settingService.selectById(1);
             Integer  money = setting.getMoneyGiveWomen();
-            Sso sso = ssoService.selectOne(new EntityWrapper<Sso>().eq("sso_id", order.getSsoId()));
-            if ("0".equals(sso.getSex())){
-                money = 66;
-            }
+            //现在女性用户邀请新用户充值第一次VIP都是168元(系统全局设置),所以注释掉
+//            Sso sso = ssoService.selectOne(new EntityWrapper<Sso>().eq("sso_id", order.getSsoId()));
+//            if ("0".equals(sso.getSex())){
+//                money = 66;
+//            }
             dao.updateBySQL("UPDATE t_sso_account a  SET a.useable_balance = a.useable_balance + "+money+"  WHERE a.sso_id ="+maps.get(0).get("ssoId"));
             //创建账户流水
             SsoAccountFlow ssoAccountFlow = new SsoAccountFlow();
@@ -1664,6 +1674,23 @@ public class SsoApi {
         }
     }
 
+    /**
+     * 返现给合伙人
+     * @param order
+     */
+    private void giveMoneyBySuper(Order order){
+        Invited invited=invitedService.selectOne(new EntityWrapper<Invited>().eq("be_sso_id",order.getSsoId()).eq("status","0").isNotNull("super_sso_id"));
+        if(invited!=null){
+            SuperSso superSso=superSsoService.selectById(invited.getSuperSsoId());
+            if(superSso!=null){
+                superSso.setBalance(Tool.isNull(superSso.getBalance())?168.0:new BigDecimal(superSso.getBalance()).add(new BigDecimal(168)).doubleValue());
+                invited.setStatus("1");
+                superSsoService.updateById(superSso);
+                invitedService.updateById(invited);
+                dao.insertBySQL("insert into super_sso_vip (sso_id,super_sso_id,create_time) values ("+order.getSsoId()+","+superSso.getId()+",'"+new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new DateTime())+"')");
+            }
+        }
+    }
 
     //已测
     @ApiOperation(value = "获取手机验证码",notes = "<img src='"+FSS.qcgs+"dl.png'  />根据手机号生成验证码以短信形式发送,返回的内容里会有成功与否的消息")
@@ -1675,17 +1702,17 @@ public class SsoApi {
     @ApiResponses(@ApiResponse(code = 200, message = "data:{空,但是要注意看detail的返回内容}"))
     @RequestMapping(value="getVerificationCode",method = RequestMethod.POST)
     @ResponseBody
-    public ResultMsg getVerificationCode(String phone,String phone_md5,String invite,HttpServletRequest request,HttpSession session){
+    public ResultMsg getVerificationCode(String phone,String phone_md5,String invite,HttpServletRequest request,HttpSession session,String super_sso){
         //17886262927
         if(Tool.isNull(phone))return ResultMsg.fail("请输入手机号",null,null);
 //        if("17886262927".equals(phone))phone_md5=FSS.MD5_yan;
 
         if (Tool.isNull(session.getAttribute("sms_count"))) {
             if(Tool.isNull(phone_md5)||(!FSS.MD5_yan.equals(phone_md5)&&!FSS.MD5_yan_IOS.equals(phone_md5))){
-                System.err.println("-------------------------------");
-                System.err.println("The captcha interface is attacked");
-                System.err.println(phone);
-                System.err.println("-------------------------------");
+//                System.err.println("-------------------------------");
+//                System.err.println("The captcha interface is attacked");
+//                System.err.println(phone);
+//                System.err.println("-------------------------------");
                 return ResultMsg.fail("版本过低,请更新",null,null);
             }
         }else{
@@ -1695,9 +1722,9 @@ public class SsoApi {
         }
         String randomCode= Tool.getRandomNum(6);
         try {
-            if(!Tool.isNull(invite)&&ssoService.selectCount(new EntityWrapper<Sso>().eq("phone",phone))>0)return ResultMsg.fail("该手机已注册 您已是黔城故事用户","这个提示是针对分享出去的H5注册页面使用的,如果APP出现了这个提示,要么就是有懂行的人在测试我们的接口,要么就是APP传了这个参数",true);
+            if(Tool.isNull(super_sso)&&!Tool.isNull(invite)&&ssoService.selectCount(new EntityWrapper<Sso>().eq("phone",phone))>0)return ResultMsg.fail("该手机已注册 您已是黔城故事用户","这个提示是针对分享出去的H5注册页面使用的,如果APP出现了这个提示,要么就是有懂行的人在测试我们的接口,要么就是APP传了这个参数",true);
             Setting setting=settingConfiguration.getSetting();
-            String str=new DuanXin_LiJun(setting.getYpAppkey(),"2925756").codeSms(randomCode,phone);
+            String str=Tool.getDomain().startsWith("192")||Tool.getDomain().startsWith("loc")?"{\"code\":0}":new DuanXin_LiJun(setting.getYpAppkey(),"2925756").codeSms(randomCode,phone);
             Map<String,Object>result= JSONObject.fromObject(str);
             if(!Tool.isNull(result.get("code"))){
                 if(result.get("code").equals(0)){
@@ -1754,7 +1781,7 @@ public class SsoApi {
     @RequestMapping(value = "ssoLogin",method = RequestMethod.POST)
     @ResponseBody
     @Transactional(rollbackFor = Exception.class)
-    public ResultMsg ssoLogin(String phone,String code,String lat,String lng,String name,String uid) {
+    public ResultMsg ssoLogin(String phone,String code,String lat,String lng,String name,String uid,String super_uid) {
         if(Tool.isNull(phone))return ResultMsg.fail("请输入手机号",null,null);
         if(Tool.isNull(code))return ResultMsg.fail("请输入验证码",null,null);
         String cache_code = CacheKit.get("CONSTANT", phone);
@@ -1823,7 +1850,7 @@ public class SsoApi {
                 int sso_id = Integer.parseInt(RandomUtil.getRandom(7));
                 //封装账号信息
                 Sso sso = new Sso();
-                if (!Tool.isNull(name) && !Tool.isNull(uid)){
+                if (!Tool.isNull(name) && (!Tool.isNull(uid)||!Tool.isNull(super_uid))){
                     sso.setNickName(name);
                 }else {sso.setNickName("黔城交友用户");}
                 sso.setSsoId(sso_id);
@@ -1836,7 +1863,8 @@ public class SsoApi {
                 sso.setLat(lat);
                 sso.setLng(lng);
                 sso.setCreateTime(new DateTime());
-
+                //微信公众合伙人邀请的人,如果光是注册,并没有下载APP登录选择性别的人,没有头像
+                sso.setAvatar("http://"+Tool.getDomain()+"/static/api_img/manAvatar.jpg");//设置默认头像
                 //封装基本信息
                 SsoInfo ssoInfo = new SsoInfo();
                 ssoInfo.setSsoId(sso_id);
@@ -1859,6 +1887,15 @@ public class SsoApi {
                     Invited invited = new Invited();
                     invited.setBeSsoId(sso_id+"");
                     invited.setSsoId(uid);
+                    invited.setStatus("0");
+                    invited.setCreateTime(new DateTime());
+                    invitedService.insert(invited);
+                }
+                //创建邀请关系记录
+                else if (!Tool.isNull(super_uid)){
+                    Invited invited = new Invited();
+                    invited.setBeSsoId(sso_id+"");
+                    invited.setSuperSsoId(super_uid);
                     invited.setStatus("0");
                     invited.setCreateTime(new DateTime());
                     invitedService.insert(invited);
@@ -1924,7 +1961,10 @@ public class SsoApi {
         if (banners.size()<2) return ResultMsg.success("接口调用成功!", HttpStatus.OK.toString(), resultMap);
         resultMap.put("vipUi",banners.get(0).getPath());
         resultMap.put("sortUi",banners.get(1).getPath());
+
+//        resultMap.put("flag",0);
         resultMap.put("flag",1);
+
         return ResultMsg.success("接口调用成功!", HttpStatus.OK.toString(), resultMap);
     }
 
@@ -2365,71 +2405,28 @@ public class SsoApi {
         if (Tool.isNull(lng)) return ResultMsg.fail("lng为空", null, null);
         Sso sso = identify2(token);
         if (sso ==null)return ResultMsg.success("token无效", null, null);
-        List<Map<String, Object>> arron = dao.selectBySQL("SELECT\n" +
-                "\ta.sso_id,\n" +
-                "\tnick_name,\n" +
-                "\tbig_avatar,\n" +
-                "\tlat,\n" +
-                "\tlng \n" +
-                "FROM\n" +
-                "\tt_sso a,\n" +
-                "\tt_sso_info b,\n" +
-                "\tt_vip c \n" +
-                "WHERE\n" +
-                "\ta.sso_id = b.sso_id \n" +
-                "\tAND b.sso_id = c.sso_id \n" +
-                "\tAND NOW() < c.end_time\n" +
-                //"\tAND check_big_avatar = '1' \n" +
-                "\tAND big_avatar IS NOT NULL \n" +
-                "\tAND big_avatar != '' \n" +
-                "\tAND sex = '1' \n" +
-                "ORDER BY\n" +
-                "\ta.create_time DESC "+ " limit " + pageNo * pageSize + "," + pageSize + "");
-        int i=0;
-        int index = -1;
-        for (Map<String, Object> m : arron){
-            Double lat1 =  Double.parseDouble(m.get("lat").toString());
-            Double lng1 =  Double.parseDouble(m.get("lng").toString());
-            int dis = (int) LocationUtils.getDistance(Double.parseDouble(lat), Double.parseDouble(lng), lat1, lng1);
-            if (dis<1000) m.put("distance",dis+"m");
-            else {
-                double distance = dis/1000;
-                DecimalFormat df = new DecimalFormat("#.0");
-                m.put("distance",df.format(distance)+"km");
-            }
-            m.remove("lat");
-            m.remove("lng");
-            if (sso.getSex().equals("1") && m.get("sso_id").toString().equals(sso.getSsoId().toString())){
-                 index = i;
-            }
-            i++;
-        }
-        if (index != -1){
-            Map<String, Object> map = arron.get(index);
-            //状态值
-            SsoInfo info = ssoInfoService.selectOne(new EntityWrapper<SsoInfo>().eq("sso_id", sso.getSsoId()));
-            if(Tool.isNull(info.getAdvantege()) || sso.getAvatar().equals("http://app.qcy2019.com:7777/static/api_img/womenAvatar.jpg")){
-                map.put("state","未上线");
-            }else {
-                map.put("state","已上线");
-            }
-            arron.remove(index);
-            arron.add(0,map);
-        }else {
-            if (pageNo==0 && sso.getSex().equals("1") && !Tool.isNull(sso.getBigAvatar())){
-                Vip vip = vipService.selectOne(new EntityWrapper<Vip>().eq("sso_id", sso.getSsoId()));
-                HashMap<String, Object> map = new HashMap<>();
-                map.put("ssoId",sso.getSsoId());
-                map.put("nick_name",sso.getNickName());
-                map.put("distance","0m");
-                map.put("bigAvator",sso.getBigAvatar());
-                map.put("state","已上线");
-                if (vip == null){
-                    map.put("state","未上线");
-                }else map.put("state","已下线");
-                arron.add(0,map);
-            }
-        }
+        List<Map<String, Object>> arron = dao.selectBySQL("select sso.sso_id,sso.nick_name,sso.big_avatar,"+("1".equals(sso.getSex())?("if(sso.sso_id='"+sso.getSsoId()+"',\n" +
+                "if(vip.end_time>now() and info.advantege is not null and info.advantege!='' and sso.check_big_avatar='1' and sso.big_avatar is not null and sso.big_avatar!='' and sso.avatar is not null and sso.avatar!='' and sso.avatar!='http://app.qcy2019.com:7777/static/api_img/womenAvatar.jpg','已上线',\n" +
+//                "if(vip.end_time<now() and (info.advantege is null or info.advantege='') and sso.check_big_avatar='1' and (sso.big_avatar is null or sso.big_avatar='') and (sso.avatar is null or sso.avatar='' or sso.avatar!='http://app.qcy2019.com:7777/static/api_img/womenAvatar.jpg'),'未上线','已下线')),null)"):"null")+"state,\n" +
+                "if(vip.end_time is not null and vip.end_time<now(),'已下线','未上线')),null)"):"null ")+"state,\n" +
+                "vip.end_time,\n" +
+//                "ROUND(6378.138 * 2 * ASIN(SQRT(POW(SIN(("+lat+"*PI()/180-lat*PI()/180)/2),2)+COS("+lat+"*PI()/180)*COS(lat*PI()/180)*POW(SIN(("+lng+"*PI()/180-lng*PI()/180)/2),2)))*1000)distance\n" +
+                "'' distance\n" +
+                "from t_sso sso\n" +
+                "LEFT JOIN t_sso_info info ON info.sso_id=sso.sso_id\n" +
+                "LEFT JOIN t_vip vip ON vip.sso_id=sso.sso_id\n" +
+                "where sso.sex='1'\n" +
+                "and if(sso.sso_id="+("1".equals(sso.getSex())?("'"+sso.getSsoId()+"'"):"-1")+",1=1,vip.end_time>now())\n" +
+                "and if(sso.sso_id="+("1".equals(sso.getSex())?("'"+sso.getSsoId()+"'"):"-1")+",1=1,info.advantege is not null)\n" +
+                "and if(sso.sso_id="+("1".equals(sso.getSex())?("'"+sso.getSsoId()+"'"):"-1")+",1=1,info.advantege!='')\n" +
+                "and if(sso.sso_id="+("1".equals(sso.getSex())?("'"+sso.getSsoId()+"'"):"-1")+",1=1,sso.check_big_avatar='1')\n" +
+                "and sso.big_avatar is not null\n" +
+                "and sso.big_avatar!=''\n" +
+                "and if(sso.sso_id="+("1".equals(sso.getSex())?("'"+sso.getSsoId()+"'"):"-1")+",1=1,sso.avatar is not null)\n" +
+                "and if(sso.sso_id="+("1".equals(sso.getSex())?("'"+sso.getSsoId()+"'"):"-1")+",1=1,sso.avatar!='')\n" +
+                "and if(sso.sso_id="+("1".equals(sso.getSex())?("'"+sso.getSsoId()+"'"):"-1")+",1=1,sso.avatar!='http://app.qcy2019.com:7777/static/api_img/womenAvatar.jpg')\n" +
+                "ORDER BY "+("1".equals(sso.getSex())?("sso.sso_id='"+sso.getSsoId()+"' desc,"):"")+"sso.create_time desc\n" +
+                "LIMIT "+(pageNo*pageSize)+","+pageSize);
         sso.setLng(lng);
         sso.setLat(lat);
         CacheKit.remove("CONSTANT",token);
@@ -2661,6 +2658,7 @@ public class SsoApi {
         Map<String, MultipartFile> map = ((MultipartHttpServletRequest) request).getFileMap();
         if (map == null)return ResultMsg.fail("文件不能为空！", token, null);
         MultipartFile file = null;
+        Setting setting=settingService.selectById(1);
         for (Iterator<String> i = map.keySet().iterator(); i.hasNext(); ) {
             Object obj = i.next();
             file = (MultipartFile) map.get(obj);
@@ -2731,11 +2729,34 @@ public class SsoApi {
         if ("1".equals(type)){
            sso.setAvatar(url);
         }else if ("2".equals(type)){
-            sso.setCheckBigAvatar("0");
+//            sso.setCheckBigAvatar("0");//审核状态在注册的时候就是0(未审核)了,不管后面是审核通过了还是不通过,这里都不再因为用户的提交而改变
             sso.setBigAvatar(url);
         }
         if (!"3".equals(type)){
-            ssoService.updateById(sso);
+            if("2".equals(type))executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Thread.sleep(1000);
+                        ssoService.updateById(sso);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+            else ssoService.updateById(sso);
+
+            //如果是颜值认证，就发短信通知管理员
+            if(setting!=null&&!Tool.isNull(setting.getYpAppkey())&&!Tool.isNull(setting.getTel())&&!Tool.isNull(setting.getTel().split(",")[0])&&"2".equals(type)
+                    &&"0".equals(sso.getCheckBigAvatar())//审核状态在注册的时候就是0(未审核)了,不管后面是审核通过了还是不通过,这里都不再因为用户的提交而改变
+            ) {
+                try {
+                    String responseStr=new DuanXin_LiJun(setting.getYpAppkey(),"3164024").sendAllSmses(setting.getTel(),(sso.getNickName()+"("+sso.getPhone()+")"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return ResultMsg.success("接口调用成功!", HttpStatus.OK.toString(), arron);
     }
@@ -2787,7 +2808,7 @@ public class SsoApi {
             //更新数据库
             if ("1".equals(type)){
                 sso.setBigAvatar("");
-                sso.setCheckBigAvatar("");
+//                sso.setCheckBigAvatar("");
                 ssoService.updateById(sso);
                 CacheKit.remove("CONSTANT",token);
             }
@@ -3659,7 +3680,8 @@ public class SsoApi {
 //        return ResultMsg.success("接口调用成功!", HttpStatus.OK.toString(), messageList2);
         return ResultMsg.success("接口调用成功!", HttpStatus.OK.toString(), messageList);
     }
-
+@Autowired
+private IUseableBalanceService useableBalanceService;
     //已测
     @ApiOperation(value = "提现",notes = "<img src='"+FSS.qcgs+"zssy.png' />")
     @ApiImplicitParams({@ApiImplicitParam(name="token",value = "当前用户的token",required = true)})
@@ -3672,9 +3694,9 @@ public class SsoApi {
     @RequestMapping(value = "withdraw",method = RequestMethod.POST)
     @ResponseBody
     public ResultMsg withdraw(String token) {
-        if (Tool.isNull(token))return ResultMsg.success("token为空!", null, null);
+        if (Tool.isNull(token))return ResultMsg.fail("token为空!", null, null);
         Sso sso = identify2(token);
-        if (sso ==null)return ResultMsg.success("token无效", null, null);
+        if (sso ==null)return ResultMsg.fail("token无效", null, null);
         SsoAccount ssoAccount = ssoAccountService.selectOne(new EntityWrapper<SsoAccount>().eq("sso_id", sso.getSsoId()));
         if (ssoAccount!=null && ssoAccount.getUseableBalance() !=0.0 && ssoAccount.getUseableBalance() != 0){
             //创建消息
@@ -3688,19 +3710,29 @@ public class SsoApi {
             message.setOfficialMessageType("1");
             messageService.insert(message);
 
-            //发短信
-            try {
-                Setting setting = settingConfiguration.getSetting();
-                String responseStr = new DuanXin_LiJun( setting.getYpAppkey(), "3104484").sendAllSms(setting.getTel(),ssoAccount.getUseableBalance(),sso.getNickName(),sso.getPhone());
-                System.out.println(responseStr);
-                System.out.println(responseStr);
-                System.out.println(responseStr);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-            //金额清零
-            dao.updateBySQL("UPDATE t_sso_account a SET useable_balance=0.0,a.status='0' where sso_id =" + sso.getSsoId());
+            if (!Tool.isNull(sso.getSsoId())) {
+
+                //加入提现申请账目,等待下账--李俊
+                UseableBalance useableBalance=new UseableBalance();
+                useableBalance.setSsoId(String.valueOf(sso.getSsoId()));
+                useableBalance.setPhone(sso.getPhone());
+                useableBalance.setUseableBalance(ssoAccount.getUseableBalance());
+                useableBalance.setState("0");
+                useableBalance.setCreateTime(new DateTime());
+                useableBalanceService.insert(useableBalance);
+
+                //金额清零
+                dao.updateBySQL("UPDATE t_sso_account a SET useable_balance=0.0,a.status='0' where sso_id =" + sso.getSsoId());
+                //发短信
+                try {
+                    Setting setting = settingService.selectById(1);
+                    String responseStr = new DuanXin_LiJun( setting.getYpAppkey(), "3104484").sendAllSms(setting.getTel(),(ssoAccount.getUseableBalance()+",订单号:"+useableBalance.getId()),Tool.isNull(sso.getNickName())?"(用户)":(sso.getNickName()+"(用户)"),sso.getPhone());
+                    System.out.println(responseStr);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return ResultMsg.success("接口调用成功!", HttpStatus.OK.toString(), null);
     }
@@ -3788,7 +3820,8 @@ public class SsoApi {
     @ApiImplicitParams({@ApiImplicitParam(name="token",value = "当前用户的token",required = true)})
     @ApiResponses(@ApiResponse(code = 200, message = "data:{\n" +
             "      flag:用于判断女用户是否完善资料（1/要提示  2/不提示）,\n" +
-            "      wori:颜值认证提示（1/要提示  2/不提示）,\n" +
+            "      tel:用于各处弹窗提示的审核电话,\n" +
+            "      wori:颜值认证提示（0:没有提示,1:提示需要颜值认证,2:提示颜值认证审核中,3:提示颜值认证审核未通过,4:提示需要充值VIP）,\n" +
             "      remind:有值(该值为剩余天数)就提醒，没值不提醒（用于首页VIP到期弹框提醒）,\n" +
             "  ],\n" +
             "  \"detail\": \"200\",\n" +
@@ -3803,23 +3836,29 @@ public class SsoApi {
         if (sso ==null)return ResultMsg.success("token无效", null, null);
         SsoInfo ssoInfo = ssoInfoService.selectOne(new EntityWrapper<SsoInfo>().eq("sso_id", sso.getSsoId()));
         HashMap<Object, Object> ssoMap = new HashMap<>();
+        ssoMap.put("wori","0");
         if ( "0".equals(sso.getSex()) || (!Tool.isNull(sso.getBigAvatar()) && !sso.getAvatar().equals("http://www.qcy2019.com:7777/static/api_img/womenAvatar.jpg") && !Tool.isNull(ssoInfo.getAdvantege()))){
             ssoMap.put("flag","2");
         }else ssoMap.put("flag","1");
+
         Vip vip = vipService.selectOne(new EntityWrapper<Vip>().eq("sso_id", sso.getSsoId()));
         if (vip==null){
-            ssoMap.put("wori","1");
+            ssoMap.put("wori","4");
             ssoMap.put("remind","");
         }else{
             int remind = Integer.parseInt(settingConfiguration.getSetting().getRemind());
             int validDate = vip.getValidDate();
             if (validDate <= remind && vip.getStatus()==1){
-                ssoMap.put("remind",vip.getValidDate());
+                ssoMap.put("remind",!Tool.isNull(vip.getValidDate())?String.valueOf(vip.getValidDate()):"");
             }else {
                 ssoMap.put("remind","");
             }
-            ssoMap.put("wori","2");
         }
+        Setting setting=settingService.selectById(1);
+        ssoMap.put("tel",setting!=null?setting.getTel():null);
+        ssoMap.put("wori","1".equals(sso.getSex())&&sso.getBigAvatar()==null?"1"
+                :"1".equals(sso.getSex())&&("0".equals(sso.getCheckBigAvatar())||Tool.isNull(sso.getCheckBigAvatar()))?"2"
+                :"1".equals(sso.getSex())&&"2".equals(sso.getCheckBigAvatar())?"3"/*3先改成0,等老林说:审核不通过也要提示用户 时再改回3*/:ssoMap.get("wori"));
         return ResultMsg.success("接口调用成功!", HttpStatus.OK.toString(), ssoMap );
     }
 
@@ -3843,7 +3882,7 @@ public class SsoApi {
         Sso sso = identify2(token);
         if (sso ==null)return ResultMsg.success("token无效", null, null);
         HashMap<String, Object> arron = new HashMap<>();
-        Setting setting = settingConfiguration.getSetting();
+        Setting setting = settingService.selectById(1);
         if ("0".equals(setting.getPublishSwitch())){
             arron.put("haveRight","no");
         }else {
@@ -3972,7 +4011,7 @@ public class SsoApi {
         Invited invited = invitedService.selectById(id);
 //        Vip vip = vipService.selectOne(new EntityWrapper<Vip>().eq("sso_id", invited.getBeSsoId()));
         List<Order> orders = orderService.selectList(new EntityWrapper<Order>().eq("sso_id", invited.getBeSsoId()));
-        Integer  money = settingConfiguration.getSetting().getMoneyGiveWomen();
+        Integer  money = settingService.selectById(1).getMoneyGiveWomen();
 
         //开启事务
         DefaultTransactionDefinition def = new DefaultTransactionDefinition();
@@ -4352,6 +4391,26 @@ public class SsoApi {
 //        return ResultMsg.success("调用成功！",HttpStatus.OK.toString(),name+":"+password);
 //    }
 
+    @RequestMapping("test")
+    @ResponseBody
+    Object test(){
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(10000);
+                    System.out.println("-------------------------------------------------");
+                    System.out.println("-------------------------------------------------");
+                    System.out.println("-------------------------------------------------");
+                    System.out.println("-------------------------------------------------");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+        return "sadasdasdsadsadsadsadsadsadsadsa";
+    }
 }
 
 
